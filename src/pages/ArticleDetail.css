@@ -1,0 +1,116 @@
+.article-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 24px 80px 24px;
+}
+
+.article-header {
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.back-link {
+  display: inline-block;
+  color: #00d2ff;
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  transition: opacity 0.3s ease;
+}
+
+.back-link:hover {
+  opacity: 0.8;
+}
+
+.article-title {
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.article-meta {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.article-hero-image {
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.article-hero-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.article-content {
+  padding: 40px;
+  border-radius: 20px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #e0e0e0;
+  margin-bottom: 60px;
+}
+
+.article-content h2, .article-content h3 {
+  color: #fff;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+/* Upsell CTA */
+.upsell-cta {
+  padding: 40px;
+  border-radius: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-border {
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  box-shadow: 0 0 40px rgba(0, 210, 255, 0.1);
+}
+
+.upsell-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.upsell-desc {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.upsell-btn {
+  font-size: 16px;
+  padding: 16px 32px;
+}
+
+@media (max-width: 768px) {
+  .article-title {
+    font-size: 28px;
+  }
+  .article-content {
+    padding: 24px;
+  }
+  .upsell-cta {
+    padding: 30px 20px;
+  }
+}
