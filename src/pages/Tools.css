@@ -85,23 +85,6 @@
   letter-spacing: 0.5px;
 }
 
-.tool-image-wrapper {
-  width: 100%;
-  height: 200px;
-  overflow: hidden;
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.tool-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.tool-card:hover .tool-image {
-  transform: scale(1.05);
-}
 
 .tool-content {
   padding: 24px;
@@ -201,9 +184,12 @@
   .tools-grid {
     grid-template-columns: 1fr;
     gap: 24px;
-  }
-  
-  .tool-image-wrapper {
-    height: 180px;
-  }
+  }}
+
+.tools-intro {
+  padding: 60px 40px;
+  text-align: center;
+  margin-bottom: 40px;
 }
+.tools-intro .hero-title { margin-bottom: 20px; }
+.tools-intro .hero-subtitle { max-width: 700px; margin: 0 auto; }

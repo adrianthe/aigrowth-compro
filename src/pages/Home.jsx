@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useLanguage } from '../contexts/LanguageContext';
 import './Home.css';
 
+const rotatingWords = ['Belajar', 'Berkembang', 'Ber-progress', 'Bertumbuh'];
+
 export default function Home() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [articles, setArticles] = useState([]);
-  const [galleryImages, setGalleryImages] = useState([]);
   
   // Word Rotator state
-  const words = ['Belajar', 'Berkembang', 'Ber-progress', 'Bertumbuh'];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentWordIndex((prev) => (prev + 1) % words.length);
+      setCurrentWordIndex((prev) => (prev + 1) % rotatingWords.length);
     }, 2500);
     return () => clearInterval(interval);
   }, []);
@@ -25,7 +25,7 @@ export default function Home() {
     const fetchArticles = async () => {
       const { data, error } = await supabase
         .from('articles')
-        .select('*')
+        .select('id, title, slug, content, created_at')
         .order('created_at', { ascending: false })
         .limit(3);
       if (!error && data) {
@@ -33,26 +33,8 @@ export default function Home() {
       }
     };
 
-    const fetchGallery = async () => {
-      const { data, error } = await supabase
-        .from('prompts')
-        .select('imageUrl')
-        .order('created_at', { ascending: false })
-        .limit(6);
-      if (!error && data) {
-        setGalleryImages(data);
-      }
-    };
-
     fetchArticles();
-    fetchGallery();
   }, []);
-
-  // Helper to fill grid to exactly 6 items
-  const displayGallery = [...galleryImages];
-  while (displayGallery.length < 6) {
-    displayGallery.push({ isSkeleton: true, id: `skel-${displayGallery.length}` });
-  }
 
   return (
     <div className="home-page">
@@ -64,7 +46,7 @@ export default function Home() {
           <p className="hero-subtitle">
             {t('hero_subtitle')}
           </p>
-          <button className="primary-btn large-btn" onClick={() => navigate('/library')}>
+          <button className="primary-btn large-btn" onClick={() => navigate('/courses')}>
             {t('hero_cta')}
           </button>
         </div>
@@ -76,7 +58,7 @@ export default function Home() {
           <h2 className="community-title">
             Gabung Komunitas AIGrowth untuk <br/>
             <span className="glow-text fade-text" key={currentWordIndex} style={{ display: 'inline-block' }}>
-              {words[currentWordIndex]}
+              {rotatingWords[currentWordIndex]}
             </span> di Era AI
           </h2>
           <p className="community-subtitle">
@@ -248,32 +230,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Gallery Card */}
-          <div className="profile-card content-card glass-panel">
-            <div className="content-left">
-              <div className="badge-pill">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
-                CINEMATIC SHOWCASE
-              </div>
-              <h2 className="content-title">GALLERY<br/>VIDEO <span className="highlight-gray">AI</span></h2>
-              <p className="content-desc">
-                Eksplorasi koleksi gambar & video sinematik menakjubkan yang dibuat sepenuhnya menggunakan teknologi Artificial Intelligence terbaru.
-              </p>
-              <Link to="/library" className="action-btn cyan-btn">LIHAT GALLERY ➔</Link>
-            </div>
-            <div className="content-right">
-              <div className="thumbnail-grid">
-                {displayGallery.map((item, idx) => (
-                  <div 
-                    key={item.id || idx} 
-                    className={`thumb-item ${item.isSkeleton ? 'skeleton-bg' : ''}`}
-                    style={item.imageUrl ? { backgroundImage: `url(${item.imageUrl})` } : {}}
-                  ></div>
-                ))}
-              </div>
-            </div>
-          </div>
-
         </div>
       </section>
 
@@ -288,33 +244,25 @@ export default function Home() {
                 title: 'Cara Gampang Bikin Video AI Modal HP (Contoh)',
                 slug: 'contoh-artikel-1',
                 content: 'Ini adalah contoh teks deskripsi artikel tutorial yang akan muncul di beranda. Nanti Anda bisa menulis isi yang lebih panjang dan bermanfaat untuk audiens...',
-                image_url: null,
               },
               {
                 id: 'dummy-2',
-                title: '5 Prompt Rahasia Midjourney V6 (Contoh)',
+                title: 'Memulai Otomasi Kerja dengan AI (Contoh)',
                 slug: 'contoh-artikel-2',
-                content: 'Pelajari rahasia membuat gambar fotorealistik dengan Midjourney V6 tanpa harus jago desain. Cukup copy-paste prompt ini...',
-                image_url: null,
+                content: 'Pelajari cara sederhana memilih tugas yang bisa diotomasi agar pekerjaan harian menjadi lebih cepat dan terukur.',
               }
             ]).map(article => (
               <Link to={`/blog/${article.slug}`} key={article.id} className="profile-card about-card glass-panel" style={{textDecoration: 'none', color: 'inherit'}}>
-                {article.image_url ? (
-                  <div className="about-avatar" style={{borderRadius: '16px', border: 'none', overflow: 'hidden'}}>
-                    <img src={article.image_url} alt={article.title} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-                  </div>
-                ) : (
-                  <div className="about-avatar" style={{borderRadius: '16px', border: 'none', background: 'rgba(255,255,255,0.05)'}}>
-                    <span style={{fontSize: '24px'}}>📄</span>
-                  </div>
-                )}
+                <div className="about-avatar" style={{borderRadius: '16px', border: 'none', background: 'rgba(255,255,255,0.05)', fontSize: '12px', fontWeight: '700', letterSpacing: '1px'}}>
+                  ARTIKEL
+                </div>
                 <div className="about-info" style={{flex: 1}}>
                   <h3 className="about-card-title" style={{fontSize: '22px', marginBottom: '8px'}}>{article.title}</h3>
                   <p className="about-card-desc" style={{display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
                     {article.content}
                   </p>
                   <span style={{color: '#00d2ff', fontSize: '14px', fontWeight: 'bold', marginTop: '12px', display: 'inline-block'}}>
-                    Baca Selengkapnya ➔
+                    Baca Selengkapnya
                   </span>
                 </div>
               </Link>

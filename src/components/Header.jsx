@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import './Header.css';
@@ -16,8 +15,8 @@ export default function Header() {
 
         <nav className="nav-links">
           <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_home')}</NavLink>
-          <NavLink to="/library" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_library')}</NavLink>
-          <NavLink to="/studio" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_studio')}</NavLink>
+          <NavLink to="/courses" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_courses')}</NavLink>
+          <NavLink to="/tools" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_tools')}</NavLink>
           <NavLink to="/admin" className={({ isActive }) => isActive ? "active" : ""} style={{color: 'var(--accent-color)'}}>{t('nav_admin')}</NavLink>
         </nav>
 
@@ -29,7 +28,7 @@ export default function Header() {
           >
             {language.toUpperCase()}
           </button>
-          <button className="primary-btn" onClick={() => navigate('/library')}>
+          <button className="primary-btn" onClick={() => navigate('/courses')}>
             {t('get_started')}
           </button>
         </div>
