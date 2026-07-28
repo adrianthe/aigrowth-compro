@@ -1,33 +1,30 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { supabase } from '../lib/supabaseClient';
 
 export default function ProtectedRoute({ children }) {
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
+    let active = true;
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    fetch('/api/auth', { credentials: 'same-origin', cache: 'no-store' })
+      .then((response) => response.json())
+      .then((payload) => {
+        if (active) setAuthenticated(Boolean(payload.authenticated));
+      })
+      .catch(() => {
+        if (active) setAuthenticated(false);
+      });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      active = false;
+    };
   }, []);
 
-  if (loading) {
-    return <div className="container" style={{padding: '100px 24px', textAlign: 'center'}}>Checking authorization...</div>;
+  if (authenticated === null) {
+    return <div className="container" style={{ padding: '100px 24px', textAlign: 'center' }}>Memeriksa akses admin...</div>;
   }
 
-  if (!session) {
-    return <Navigate to="/login" replace />;
-  }
-
+  if (!authenticated) return <Navigate to="/login" replace />;
   return children;
 }

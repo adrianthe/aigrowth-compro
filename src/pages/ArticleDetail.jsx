@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { supabase } from '../lib/supabaseClient';
+import { fetchContentItems } from '../lib/contentApi';
 import './ArticleDetail.css';
 
 export default function ArticleDetail() {
@@ -9,19 +9,17 @@ export default function ArticleDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchArticle = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('articles')
-        .select('id, title, slug, content, created_at')
-        .eq('slug', slug)
-        .single();
-
-      if (!error && data) setArticle(data);
+    let active = true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLoading(true);
+    fetchContentItems('article').then((items) => {
+      if (!active) return;
+      setArticle(items.find((item) => item.slug === slug) || null);
       setLoading(false);
+    });
+    return () => {
+      active = false;
     };
-
-    fetchArticle();
   }, [slug]);
 
   if (loading) {
@@ -42,11 +40,11 @@ export default function ArticleDetail() {
       <div className="article-header glass-panel">
         <Link to="/" className="back-link">Kembali</Link>
         <h1 className="article-title">{article.title}</h1>
-        <p className="article-meta">Dipublikasikan pada {new Date(article.created_at).toLocaleDateString('id-ID')}</p>
+        <p className="article-meta">Dipublikasikan pada {new Date(article.createdAt).toLocaleDateString('id-ID')}</p>
       </div>
 
       <div className="article-content glass-panel">
-        {article.content.split('\n').map((paragraph, index) => (
+        {article.description.split('\n').map((paragraph, index) => (
           paragraph ? <p key={index}>{paragraph}</p> : <br key={index} />
         ))}
       </div>

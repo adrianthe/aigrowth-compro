@@ -1,18 +1,22 @@
+import { useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { getDefaultContent } from '../data/contentDefaults';
+import { fetchContentItems } from '../lib/contentApi';
 import './Studio.css';
-
-const courses = [
-  {
-    id: 1,
-    title: 'Open Claw Course',
-    category: 'Online Course',
-    description: 'Kelas praktis dari AIGrowth untuk membantu Anda menerapkan AI ke dalam alur kerja profesional secara terarah.',
-    href: 'https://s.id/openclawadr',
-  },
-];
 
 export default function Studio() {
   const { t } = useLanguage();
+  const [courses, setCourses] = useState(() => getDefaultContent('course'));
+
+  useEffect(() => {
+    let active = true;
+    fetchContentItems('course').then((items) => {
+      if (active) setCourses(items);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <div className="studio-page">
@@ -24,15 +28,21 @@ export default function Studio() {
         </div>
 
         <div className="studio-grid fade-in">
+          {courses.length === 0 && <div className="glass-panel empty-state">Belum ada course yang dipublikasikan.</div>}
           {courses.map((course) => (
             <article key={course.id} className="studio-card glass-panel course-card">
               <div className="studio-info">
-                <span className="studio-category">{course.category}</span>
+                <div className="course-card-meta">
+                  <span className="studio-category">{course.category || 'Course'}</span>
+                  {course.featured && <span className="course-featured">Rekomendasi</span>}
+                </div>
                 <h2 className="studio-title">{course.title}</h2>
                 <p className="course-description">{course.description}</p>
-                <a href={course.href} target="_blank" rel="noopener noreferrer" className="course-link">
-                  Lihat Detail Course
-                </a>
+                {course.url && (
+                  <a href={course.url} target="_blank" rel="noopener noreferrer" className="course-link">
+                    {course.label || 'Lihat Detail Course'}
+                  </a>
+                )}
               </div>
             </article>
           ))}

@@ -1,21 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { getDefaultContent } from '../data/contentDefaults';
+import { fetchContentItems } from '../lib/contentApi';
 import './Tools.css';
 
-const tools = [
-  {
-    id: 1,
-    name: 'Dibales.ai',
-    category: 'Social Media',
-    description: 'Platform AI untuk otomasi media sosial yang membantu membalas komentar dan pesan pelanggan secara lebih cepat.',
-    affiliateLink: 'https://s.id/dibalesai',
-    price: 'Lihat Detail',
-    isHot: true,
-  },
-];
-
 export default function Tools() {
+  const [tools, setTools] = useState(() => getDefaultContent('tool'));
   const [activeCategory, setActiveCategory] = useState('All');
-  const categories = ['All', ...new Set(tools.map((tool) => tool.category))];
+
+  useEffect(() => {
+    let active = true;
+    fetchContentItems('tool').then((items) => {
+      if (active) setTools(items);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const categories = useMemo(
+    () => ['All', ...new Set(tools.map((tool) => tool.category).filter(Boolean))],
+    [tools],
+  );
   const filteredTools = activeCategory === 'All'
     ? tools
     : tools.filter((tool) => tool.category === activeCategory);
@@ -42,17 +47,18 @@ export default function Tools() {
 
       <section className="tools-grid-section container">
         <div className="tools-grid">
+          {filteredTools.length === 0 && <div className="glass-panel empty-state">Belum ada tool di kategori ini.</div>}
           {filteredTools.map((tool) => (
             <article key={tool.id} className="tool-card glass-panel">
-              {tool.isHot && <div className="badge-hot">Rekomendasi</div>}
+              {tool.featured && <div className="badge-hot">Rekomendasi</div>}
               <div className="tool-content">
                 <div className="tool-header">
-                  <span className="tool-category">{tool.category}</span>
-                  <span className="tool-price">{tool.price}</span>
+                  <span className="tool-category">{tool.category || 'AI Tool'}</span>
+                  {tool.label && <span className="tool-price">{tool.label}</span>}
                 </div>
-                <h2 className="tool-title">{tool.name}</h2>
+                <h2 className="tool-title">{tool.title}</h2>
                 <p className="tool-desc">{tool.description}</p>
-                <a href={tool.affiliateLink} target="_blank" rel="noopener noreferrer" className="buy-btn">Buka Tool</a>
+                {tool.url && <a href={tool.url} target="_blank" rel="noopener noreferrer" className="buy-btn">Buka Tool</a>}
               </div>
             </article>
           ))}

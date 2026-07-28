@@ -17,7 +17,6 @@ export default function Header() {
           <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_home')}</NavLink>
           <NavLink to="/courses" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_courses')}</NavLink>
           <NavLink to="/tools" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_tools')}</NavLink>
-          <NavLink to="/admin" className={({ isActive }) => isActive ? "active" : ""} style={{color: 'var(--accent-color)'}}>{t('nav_admin')}</NavLink>
         </nav>
 
         <div className="header-actions">
