@@ -1,8 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { upload } from '@vercel/blob/client';
 import { useNavigate } from 'react-router-dom';
 import { CONTENT_TYPES, CONTENT_TYPE_LABELS } from '../data/contentDefaults';
 import { useLanguage } from '../contexts/LanguageContext';
 import './Admin.css';
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 const emptyForm = {
   title: '',
@@ -18,11 +22,14 @@ const emptyForm = {
 export default function Admin() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const fileInputRef = useRef(null);
   const [activeType, setActiveType] = useState('event');
   const [items, setItems] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -55,6 +62,8 @@ export default function Admin() {
   const resetForm = () => {
     setEditingId(null);
     setForm(emptyForm);
+    setUploadProgress(0);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const changeType = (type) => {
@@ -66,6 +75,49 @@ export default function Admin() {
 
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setMessage('');
+    setErrorMessage('');
+    setUploadProgress(0);
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setErrorMessage('Format foto harus JPG, PNG, atau WebP.');
+      event.target.value = '';
+      return;
+    }
+    if (file.size > MAX_IMAGE_SIZE) {
+      setErrorMessage('Ukuran foto maksimal 5 MB.');
+      event.target.value = '';
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const safeName = file.name.toLowerCase().replace(/[^a-z0-9._-]+/g, '-');
+      const blob = await upload(`cms/images/${activeType}-${Date.now()}-${safeName}`, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload',
+        onUploadProgress: ({ percentage }) => setUploadProgress(Math.round(percentage)),
+      });
+      updateField('imageUrl', blob.url);
+      setMessage('Foto berhasil diupload. Lanjut isi data lalu tekan Simpan.');
+    } catch (error) {
+      setErrorMessage(error.message || 'Foto gagal diupload.');
+    } finally {
+      setIsUploading(false);
+      event.target.value = '';
+    }
+  };
+
+  const removeImage = () => {
+    updateField('imageUrl', '');
+    setUploadProgress(0);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleEdit = (item) => {
@@ -81,6 +133,7 @@ export default function Admin() {
       label: item.label || '',
       featured: Boolean(item.featured),
     });
+    setUploadProgress(0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -200,6 +253,40 @@ export default function Admin() {
           <input id="content-category" type="text" value={form.category} onChange={(event) => updateField('category', event.target.value)} className="glass-input" placeholder={activeType === 'video' ? 'Contoh: AI Automation' : activeType === 'event' ? 'Contoh: Workshop' : 'Contoh: Online Course'} />
         </div>
 
+        {activeType !== 'video' && (
+          <div className="form-group">
+            <label>Foto (opsional)</label>
+            <div className="image-upload-panel">
+              <label className={`image-upload-button ${isUploading ? 'is-uploading' : ''}`}>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleImageUpload}
+                  disabled={isUploading}
+                />
+                <span className="upload-plus" aria-hidden="true">+</span>
+                <span>{isUploading ? `Mengupload ${uploadProgress}%` : 'Pilih foto dari perangkat'}</span>
+                <small>JPG, PNG, atau WebP - maksimal 5 MB</small>
+              </label>
+              <div className="image-url-option">
+                <span>atau gunakan URL foto</span>
+                <input type="url" value={form.imageUrl} onChange={(event) => updateField('imageUrl', event.target.value)} className="glass-input" placeholder="https://..." />
+              </div>
+            </div>
+            {isUploading && <progress className="upload-progress" value={uploadProgress} max="100">{uploadProgress}%</progress>}
+            {form.imageUrl && (
+              <div className="image-preview-card">
+                <img src={form.imageUrl} alt="Preview foto konten" />
+                <div>
+                  <strong>Foto siap dipakai</strong>
+                  <button type="button" onClick={removeImage}>Hapus dari form</button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {activeType === 'video' && (
           <div className="form-group">
             <label htmlFor="youtube-url">Link video YouTube</label>
@@ -209,15 +296,9 @@ export default function Admin() {
         )}
 
         {activeType === 'event' && (
-          <div className="admin-form-grid">
-            <div className="form-group">
-              <label htmlFor="event-date">Tanggal event (opsional)</label>
-              <input id="event-date" type="date" value={form.eventDate} onChange={(event) => updateField('eventDate', event.target.value)} className="glass-input" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="event-image">URL foto (opsional)</label>
-              <input id="event-image" type="url" value={form.imageUrl} onChange={(event) => updateField('imageUrl', event.target.value)} className="glass-input" placeholder="https://..." />
-            </div>
+          <div className="form-group">
+            <label htmlFor="event-date">Tanggal event (opsional)</label>
+            <input id="event-date" type="date" value={form.eventDate} onChange={(event) => updateField('eventDate', event.target.value)} className="glass-input" />
           </div>
         )}
 
@@ -242,8 +323,8 @@ export default function Admin() {
         )}
 
         <div className="form-actions">
-          <button type="submit" className="primary-btn submit-btn" disabled={isSubmitting}>
-            {isSubmitting ? 'Menyimpan...' : editingId ? `Perbarui ${typeLabel}` : `Simpan ${typeLabel}`}
+          <button type="submit" className="primary-btn submit-btn" disabled={isSubmitting || isUploading}>
+            {isUploading ? 'Tunggu upload...' : isSubmitting ? 'Menyimpan...' : editingId ? `Perbarui ${typeLabel}` : `Simpan ${typeLabel}`}
           </button>
           {editingId && <button type="button" className="cancel-btn" onClick={resetForm}>Batal</button>}
         </div>
@@ -256,6 +337,7 @@ export default function Admin() {
           {!isLoading && activeItems.length === 0 && <div className="glass-panel empty-state">Belum ada {typeLabel.toLowerCase()}.</div>}
           {activeItems.map((item) => (
             <article key={item.id} className="article-list-item glass-panel">
+              {item.imageUrl && <img className="admin-item-image" src={item.imageUrl} alt="" />}
               <div className="item-details">
                 <div className="content-type-badge">{CONTENT_TYPE_LABELS[item.type]}</div>
                 <h3>{item.title}</h3>

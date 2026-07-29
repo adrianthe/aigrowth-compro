@@ -51,6 +51,9 @@ export default function Tools() {
           {filteredTools.map((tool) => (
             <article key={tool.id} className="tool-card glass-panel">
               {tool.featured && <div className="badge-hot">Rekomendasi</div>}
+              <div className={`tool-image ${tool.imageUrl ? '' : 'tool-image-placeholder'}`}>
+                {tool.imageUrl ? <img src={tool.imageUrl} alt={tool.title} /> : <span>AIGROWTH TOOL</span>}
+              </div>
               <div className="tool-content">
                 <div className="tool-header">
                   <span className="tool-category">{tool.category || 'AI Tool'}</span>

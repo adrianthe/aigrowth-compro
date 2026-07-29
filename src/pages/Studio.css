@@ -152,3 +152,44 @@
   transform: translateY(-3px);
   box-shadow: 0 14px 30px rgba(76, 237, 197, 0.25);
 }
+
+.studio-card {
+  padding: 0;
+}
+
+.course-cover {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #080a1b;
+}
+
+.course-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+}
+
+.studio-card:hover .course-cover img {
+  transform: scale(1.055);
+  filter: saturate(1.08);
+}
+
+.course-cover-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(0, 229, 255, 0.3), transparent 35%),
+    linear-gradient(135deg, rgba(17, 36, 77, 0.95), rgba(40, 17, 78, 0.95));
+}
+
+.studio-info {
+  padding: 30px;
+}
