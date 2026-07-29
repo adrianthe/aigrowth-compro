@@ -3,6 +3,16 @@ import { getDefaultContent } from '../src/data/contentDefaults.js';
 
 const CONTENT_PATH = 'cms/aigrowth-content.json';
 
+function migrateContentItems(items) {
+  if (!Array.isArray(items)) return getDefaultContent();
+
+  const migrated = items.filter((item) => item?.type !== 'article');
+  if (!migrated.some((item) => item.type === 'video')) {
+    migrated.push(...getDefaultContent('video'));
+  }
+  return migrated;
+}
+
 export async function readContentItems() {
   const token = process.env.BLOB_READ_WRITE_TOKEN;
   if (!token) return getDefaultContent();
@@ -15,14 +25,14 @@ export async function readContentItems() {
   if (!response.ok) return getDefaultContent();
 
   const payload = await response.json();
-  return Array.isArray(payload.items) ? payload.items : getDefaultContent();
+  return migrateContentItems(payload.items);
 }
 
 export async function writeContentItems(items) {
   const token = process.env.BLOB_READ_WRITE_TOKEN;
   if (!token) throw new Error('Penyimpanan konten belum dikonfigurasi.');
 
-  await put(CONTENT_PATH, JSON.stringify({ items }, null, 2), {
+  await put(CONTENT_PATH, JSON.stringify({ items: migrateContentItems(items) }, null, 2), {
     access: 'public',
     addRandomSuffix: false,
     allowOverwrite: true,

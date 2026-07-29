@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CONTENT_TYPES, CONTENT_TYPE_LABELS } from '../data/contentDefaults';
-import { generateSlug } from '../lib/contentApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import './Admin.css';
 
@@ -13,7 +12,6 @@ const emptyForm = {
   imageUrl: '',
   eventDate: '',
   label: '',
-  slug: '',
   featured: false,
 };
 
@@ -81,7 +79,6 @@ export default function Admin() {
       imageUrl: item.imageUrl || '',
       eventDate: item.eventDate || '',
       label: item.label || '',
-      slug: item.slug || '',
       featured: Boolean(item.featured),
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -109,7 +106,11 @@ export default function Admin() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!form.title.trim() || !form.description.trim()) {
-      setErrorMessage('Judul dan deskripsi/konten wajib diisi.');
+      setErrorMessage('Judul dan deskripsi wajib diisi.');
+      return;
+    }
+    if (activeType === 'video' && !form.url.trim()) {
+      setErrorMessage('Link video YouTube wajib diisi.');
       return;
     }
 
@@ -121,7 +122,6 @@ export default function Admin() {
       ...form,
       id: editingId || undefined,
       type: activeType,
-      slug: activeType === 'article' ? (form.slug || generateSlug(form.title)) : '',
     };
 
     try {
@@ -161,7 +161,7 @@ export default function Admin() {
       <div className="admin-header">
         <div>
           <h1 className="section-title">Admin Konten</h1>
-          <p className="hero-subtitle">Tambah Event, Course, Tools, dan Artikel tanpa mengubah coding.</p>
+          <p className="hero-subtitle">Tambah Video YouTube, Event, Course, dan Tools tanpa mengubah coding.</p>
         </div>
         <button onClick={handleLogout} className="logout-btn">{t('admin_logout')}</button>
       </div>
@@ -191,21 +191,20 @@ export default function Admin() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="content-description">{activeType === 'article' ? 'Isi artikel' : 'Deskripsi'}</label>
-          <textarea id="content-description" value={form.description} onChange={(event) => updateField('description', event.target.value)} className="glass-input" rows={activeType === 'article' ? 12 : 5} required />
+          <label htmlFor="content-description">Deskripsi</label>
+          <textarea id="content-description" value={form.description} onChange={(event) => updateField('description', event.target.value)} className="glass-input" rows={5} required />
         </div>
 
-        {activeType !== 'article' && (
-          <div className="form-group">
-            <label htmlFor="content-category">Kategori</label>
-            <input id="content-category" type="text" value={form.category} onChange={(event) => updateField('category', event.target.value)} className="glass-input" placeholder={activeType === 'event' ? 'Contoh: Workshop' : 'Contoh: Online Course'} />
-          </div>
-        )}
+        <div className="form-group">
+          <label htmlFor="content-category">Kategori</label>
+          <input id="content-category" type="text" value={form.category} onChange={(event) => updateField('category', event.target.value)} className="glass-input" placeholder={activeType === 'video' ? 'Contoh: AI Automation' : activeType === 'event' ? 'Contoh: Workshop' : 'Contoh: Online Course'} />
+        </div>
 
-        {activeType === 'article' && (
+        {activeType === 'video' && (
           <div className="form-group">
-            <label htmlFor="content-slug">Slug URL (opsional)</label>
-            <input id="content-slug" type="text" value={form.slug} onChange={(event) => updateField('slug', event.target.value)} className="glass-input" placeholder="Otomatis dibuat dari judul" />
+            <label htmlFor="youtube-url">Link video YouTube</label>
+            <input id="youtube-url" type="url" value={form.url} onChange={(event) => updateField('url', event.target.value)} className="glass-input" placeholder="https://www.youtube.com/watch?v=..." required />
+            <span className="field-hint">Paste link YouTube biasa, Shorts, Live, atau youtu.be. Video otomatis menjadi embed.</span>
           </div>
         )}
 
@@ -222,7 +221,7 @@ export default function Admin() {
           </div>
         )}
 
-        {activeType !== 'article' && (
+        {activeType !== 'video' && (
           <div className="admin-form-grid">
             <div className="form-group">
               <label htmlFor="content-url">Link tujuan (opsional)</label>
@@ -261,6 +260,7 @@ export default function Admin() {
                 <div className="content-type-badge">{CONTENT_TYPE_LABELS[item.type]}</div>
                 <h3>{item.title}</h3>
                 <p className="item-prompt">{item.description}</p>
+                {item.type === 'video' && item.url && <a className="item-link" href={item.url} target="_blank" rel="noopener noreferrer">Buka video YouTube</a>}
               </div>
               <div className="item-actions">
                 <button onClick={() => handleEdit(item)} className="edit-btn">{t('admin_btn_edit')}</button>

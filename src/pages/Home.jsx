@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { getDefaultContent } from '../data/contentDefaults';
-import { fetchContentItems } from '../lib/contentApi';
+import { fetchContentItems, getYouTubeVideoId } from '../lib/contentApi';
 import './Home.css';
 
 const rotatingWords = ['Belajar', 'Berkembang', 'Ber-progress', 'Bertumbuh'];
@@ -33,9 +32,40 @@ function EventCard({ event }) {
   );
 }
 
+function YouTubeCard({ video, index }) {
+  const videoId = getYouTubeVideoId(video.url);
+  if (!videoId) return null;
+
+  return (
+    <article className="youtube-card glass-panel reveal-card" style={{ '--card-delay': `${index * 90}ms` }}>
+      <div className="youtube-player-shell">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
+          title={video.title}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+      </div>
+      <div className="youtube-card-body">
+        <div className="video-meta">
+          <span className="video-category">{video.category || 'AIGrowth Tutorial'}</span>
+          <span className="video-watch-label">WATCH & LEARN</span>
+        </div>
+        <h3>{video.title}</h3>
+        <p>{video.description}</p>
+        <a href={video.url} target="_blank" rel="noopener noreferrer" className="youtube-external-link">
+          Buka di YouTube <span aria-hidden="true">&nearr;</span>
+        </a>
+      </div>
+    </article>
+  );
+}
+
 export default function Home() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [articles, setArticles] = useState(() => getDefaultContent('article'));
+  const [videos, setVideos] = useState(() => getDefaultContent('video'));
   const [events, setEvents] = useState(() => getDefaultContent('event'));
 
   useEffect(() => {
@@ -47,9 +77,9 @@ export default function Home() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([fetchContentItems('article'), fetchContentItems('event')]).then(([articleItems, eventItems]) => {
+    Promise.all([fetchContentItems('video'), fetchContentItems('event')]).then(([videoItems, eventItems]) => {
       if (!active) return;
-      setArticles(articleItems);
+      setVideos(videoItems);
       setEvents(eventItems);
     });
     return () => {
@@ -59,20 +89,38 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      <section className="community-section container fade-in" style={{ width: '100%', padding: '40px 24px' }}>
-        <div className="community-content glass-panel" style={{ margin: '0 auto' }}>
+      <div className="page-ambient" aria-hidden="true">
+        <span className="ambient-orb orb-one"></span>
+        <span className="ambient-orb orb-two"></span>
+        <span className="ambient-grid"></span>
+      </div>
+
+      <section className="community-section container fade-in">
+        <div className="community-content glass-panel">
+          <div className="community-aura aura-left" aria-hidden="true"></div>
+          <div className="community-aura aura-right" aria-hidden="true"></div>
+          <div className="community-kicker"><span className="pulse-dot"></span> KOMUNITAS AI PRAKTIS INDONESIA</div>
           <h1 className="community-title">
             Gabung Komunitas AIGrowth untuk <br />
-            <span className="glow-text fade-text" key={currentWordIndex} style={{ display: 'inline-block' }}>
+            <span className="gradient-word fade-text" key={currentWordIndex}>
               {rotatingWords[currentWordIndex]}
             </span> di Era AI
           </h1>
           <p className="community-subtitle">
-            Tempat kamu bertumbuh bareng praktisi, kreator, dan pemilik bisnis yang belajar dan praktek AI bareng-bareng.
+            Tempat praktisi, kreator, dan pemilik bisnis belajar AI lewat tutorial nyata, course terarah, dan kolaborasi yang relevan.
           </p>
-          <a href="https://Wa.me/6285716280788" target="_blank" rel="noopener noreferrer" className="whatsapp-btn">
-            Join Komunitasnya sekarang -&gt;
-          </a>
+          <div className="community-actions">
+            <a href="https://Wa.me/6285716280788" target="_blank" rel="noopener noreferrer" className="whatsapp-btn">
+              Join Komunitas -&gt;
+            </a>
+            <a href="#belajar" className="learn-btn">Mulai Belajar</a>
+          </div>
+
+          <div className="community-proof" aria-label="Fokus komunitas AIGrowth">
+            <div><strong>Praktis</strong><span>Bukan teori doang</span></div>
+            <div><strong>Relevan</strong><span>Use case Indonesia</span></div>
+            <div><strong>Kolaboratif</strong><span>Tumbuh bareng</span></div>
+          </div>
 
           <div className="social-buttons-row">
             <a href="https://www.youtube.com/@Aigrowthid" className="social-btn youtube" target="_blank" rel="noopener noreferrer" title="YouTube" aria-label="YouTube AIGrowth">
@@ -91,25 +139,44 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="profile-catalog-section container fade-in" style={{ padding: '0 24px 40px' }}>
+      <section id="belajar" className="youtube-learning-section container">
+        <div className="section-heading reveal-card">
+          <div className="section-kicker"><span></span> AIGROWTH LEARNING HUB</div>
+          <h2>Belajar AI langsung dari <span className="gradient-word">video praktis</span></h2>
+          <p>Tekan play dan mulai belajar tanpa pindah halaman. Koleksi ini bisa diperbarui kapan pun dari dashboard admin.</p>
+        </div>
+        <div className="youtube-grid">
+          {videos.length === 0 && <div className="glass-panel empty-state">Belum ada video yang dipublikasikan.</div>}
+          {videos.map((video, index) => <YouTubeCard key={video.id} video={video} index={index} />)}
+        </div>
+        <div className="youtube-channel-cta">
+          <a href="https://www.youtube.com/@Aigrowthid" target="_blank" rel="noopener noreferrer">Lihat semua video di YouTube -&gt;</a>
+        </div>
+      </section>
+
+      <section className="profile-catalog-section container">
         <div className="profile-wrapper">
-          <div className="glass-panel unified-section" style={{ padding: '40px', display: 'flex', flexDirection: 'column', gap: '40px', marginBottom: '32px' }}>
-            <div className="profile-card about-card" style={{ padding: 0, border: 'none', background: 'transparent', boxShadow: 'none', alignItems: 'center' }}>
-              <div className="about-avatar" style={{ border: 'none', background: 'transparent', width: '120px', height: '120px', flexShrink: 0, borderRadius: '50%', overflow: 'hidden' }}>
-                <img src="/logo.jpg" alt="AIGrowth Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div className="glass-panel unified-section">
+            <div className="profile-card about-card about-card-modern">
+              <div className="about-avatar about-logo-wrap">
+                <img src="/logo.jpg" alt="AIGrowth Logo" />
               </div>
               <div className="about-info">
-                <h2 className="about-card-title" style={{ fontSize: '32px' }}>About <span className="highlight-cyan">AIGrowth.id</span></h2>
-                <p className="about-card-desc" style={{ fontSize: '16px', maxWidth: '800px' }}>
-                  Platform komunitas yang membahas AI Generative untuk pembuatan konten gambar, video, dan produktivitas. Aktif sharing tutorial dan tips seputar AI.
+                <div className="section-kicker"><span></span> ABOUT US</div>
+                <h2 className="about-card-title">AI terasa lebih mudah saat <span className="gradient-word">belajar bareng</span></h2>
+                <p className="about-card-desc">
+                  AIGrowth.id adalah platform komunitas yang membahas Generative AI untuk konten, video, otomasi, dan produktivitas melalui pengalaman yang praktis dan relevan.
                 </p>
               </div>
             </div>
 
             <div className="founders-section">
-              <h2 className="content-title" style={{ fontSize: '32px', marginBottom: '24px', textAlign: 'center' }}>MEET THE <span className="highlight-cyan">FOUNDERS</span></h2>
+              <div className="section-heading compact-heading">
+                <div className="section-kicker"><span></span> PEOPLE BEHIND AIGROWTH</div>
+                <h2>Meet the <span className="gradient-word">founders</span></h2>
+              </div>
               <div className="founders-grid">
-                <div className="founder-card glass-panel" style={{ background: 'rgba(255, 255, 255, 0.02)' }}>
+                <div className="founder-card glass-panel">
                   <div className="founder-image" style={{ backgroundImage: 'url(/adrian.png)' }}></div>
                   <div className="founder-overlay">
                     <div className="founder-badges"><span className="founder-role">FOUNDER</span></div>
@@ -119,7 +186,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <div className="founder-card glass-panel" style={{ background: 'rgba(255, 255, 255, 0.02)' }}>
+                <div className="founder-card glass-panel">
                   <div className="founder-image" style={{ backgroundImage: 'url(/adriel.png)' }}></div>
                   <div className="founder-overlay">
                     <div className="founder-badges"><span className="founder-role">CO-FOUNDER</span></div>
@@ -132,32 +199,16 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="event-showcase-section" style={{ marginTop: '20px' }}>
-              <h2 className="content-title" style={{ fontSize: '32px', marginBottom: '24px', textAlign: 'center' }}>AIGROWTH <span className="highlight-cyan">EVENTS</span></h2>
+            <div className="event-showcase-section">
+              <div className="section-heading compact-heading">
+                <div className="section-kicker"><span></span> COMMUNITY IN ACTION</div>
+                <h2>AIGrowth <span className="gradient-word">events</span></h2>
+              </div>
               <div className="event-gallery-grid">
                 {events.length === 0 && <div className="glass-panel empty-state">Belum ada event yang dipublikasikan.</div>}
                 {events.map((event) => <EventCard key={event.id} event={event} />)}
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="latest-articles-section container fade-in" style={{ padding: '40px 24px 80px' }}>
-        <div className="profile-wrapper">
-          <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '30px' }}>Belajar AI <span className="highlight-cyan">Gratis</span></h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {articles.length === 0 && <div className="glass-panel empty-state">Belum ada artikel yang dipublikasikan.</div>}
-            {articles.slice(0, 3).map((article) => (
-              <Link to={`/blog/${article.slug}`} key={article.id} className="profile-card about-card glass-panel" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div className="about-avatar" style={{ borderRadius: '16px', border: 'none', background: 'rgba(255,255,255,0.05)', fontSize: '12px', fontWeight: '700', letterSpacing: '1px' }}>ARTIKEL</div>
-                <div className="about-info" style={{ flex: 1 }}>
-                  <h3 className="about-card-title" style={{ fontSize: '22px', marginBottom: '8px' }}>{article.title}</h3>
-                  <p className="about-card-desc" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{article.description}</p>
-                  <span style={{ color: '#00d2ff', fontSize: '14px', fontWeight: 'bold', marginTop: '12px', display: 'inline-block' }}>Baca Selengkapnya</span>
-                </div>
-              </Link>
-            ))}
           </div>
         </div>
       </section>

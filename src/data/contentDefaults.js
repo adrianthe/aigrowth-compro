@@ -1,7 +1,7 @@
-export const CONTENT_TYPES = ['article', 'event', 'course', 'tool'];
+export const CONTENT_TYPES = ['video', 'event', 'course', 'tool'];
 
 export const CONTENT_TYPE_LABELS = {
-  article: 'Artikel',
+  video: 'Video YouTube',
   event: 'Event',
   course: 'Course',
   tool: 'Tool',
@@ -97,19 +97,21 @@ export const defaultContentItems = [
     createdAt: '2026-01-08T00:00:00.000Z',
   },
   {
-    id: 'article-video-ai-hp',
-    type: 'article',
-    title: 'Cara Gampang Bikin Video AI Modal HP',
-    slug: 'cara-gampang-bikin-video-ai-modal-hp',
-    description: 'Panduan ringkas untuk mulai membuat video AI menggunakan perangkat yang sudah Anda miliki. Mulai dari menyusun ide, menulis prompt, hingga merapikan hasil akhir agar siap dipublikasikan.',
+    id: 'video-ai-agent-sosmed',
+    type: 'video',
+    title: 'AI Agent Untuk Sosmed: Otomatisasi Konten dari Riset sampai Posting',
+    description: 'Pelajari workflow AI Agent untuk riset, produksi, dan distribusi konten media sosial secara lebih efisien.',
+    category: 'AI Automation',
+    url: 'https://www.youtube.com/watch?v=vSC5kW4us04',
     createdAt: '2026-01-09T00:00:00.000Z',
   },
   {
-    id: 'article-otomasi-ai',
-    type: 'article',
-    title: 'Memulai Otomasi Kerja dengan AI',
-    slug: 'memulai-otomasi-kerja-dengan-ai',
-    description: 'Pelajari cara sederhana memilih tugas yang bisa diotomasi agar pekerjaan harian menjadi lebih cepat dan terukur.',
+    id: 'video-chatgpt-pemula',
+    type: 'video',
+    title: 'Cara Cari Uang Pakai ChatGPT untuk Pemula',
+    description: 'Panduan praktis memulai layanan berbasis ChatGPT dengan modal terjangkau dan langkah yang mudah diikuti.',
+    category: 'ChatGPT',
+    url: 'https://www.youtube.com/watch?v=rHVyU4-cht0',
     createdAt: '2026-01-10T00:00:00.000Z',
   },
 ];

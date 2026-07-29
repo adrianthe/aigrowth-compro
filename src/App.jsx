@@ -5,7 +5,6 @@ import Studio from './pages/Studio';
 import Tools from './pages/Tools';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
-import ArticleDetail from './pages/ArticleDetail';
 import ProtectedRoute from './components/ProtectedRoute';
 import { LanguageProvider } from './contexts/LanguageContext';
 import './App.css';
@@ -23,7 +22,6 @@ function App() {
 
               <Route path="/courses" element={<Studio />} />
               <Route path="/tools" element={<Tools />} />
-              <Route path="/blog/:slug" element={<ArticleDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin" element={
                 <ProtectedRoute>

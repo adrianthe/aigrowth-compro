@@ -13,21 +13,39 @@ function cleanText(value, maxLength = 5000) {
   return String(value || '').trim().slice(0, maxLength);
 }
 
-function makeSlug(value) {
-  return cleanText(value, 120)
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)+/g, '');
+function getYouTubeVideoId(value) {
+  try {
+    const url = new URL(value);
+    const hostname = url.hostname.replace(/^www\./, '');
+    let candidate = '';
+
+    if (hostname === 'youtu.be') candidate = url.pathname.split('/').filter(Boolean)[0] || '';
+    if (hostname.endsWith('youtube.com')) {
+      candidate = url.searchParams.get('v') || '';
+      if (!candidate) {
+        const parts = url.pathname.split('/').filter(Boolean);
+        if (['embed', 'shorts', 'live'].includes(parts[0])) candidate = parts[1] || '';
+      }
+    }
+
+    return /^[A-Za-z0-9_-]{11}$/.test(candidate) ? candidate : '';
+  } catch {
+    return '';
+  }
 }
 
 function normalizeItem(input, existingItem) {
   const type = cleanText(input.type, 20);
   const title = cleanText(input.title, 180);
   const description = cleanText(input.description, 12000);
+  const url = cleanText(input.url, 1000);
 
   if (!allowedTypes.has(type)) throw new Error('Jenis konten tidak valid.');
   if (!title) throw new Error('Judul wajib diisi.');
   if (!description) throw new Error('Deskripsi atau konten wajib diisi.');
+  if (type === 'video' && !getYouTubeVideoId(url)) {
+    throw new Error('Masukkan link video YouTube yang valid.');
+  }
 
   const now = new Date().toISOString();
   return {
@@ -36,11 +54,10 @@ function normalizeItem(input, existingItem) {
     title,
     description,
     category: cleanText(input.category, 80),
-    url: cleanText(input.url, 1000),
+    url,
     imageUrl: cleanText(input.imageUrl, 1000),
     eventDate: cleanText(input.eventDate, 40),
     label: cleanText(input.label, 80),
-    slug: type === 'article' ? makeSlug(input.slug || title) : '',
     featured: Boolean(input.featured),
     createdAt: existingItem?.createdAt || now,
     updatedAt: now,
