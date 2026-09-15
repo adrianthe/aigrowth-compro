@@ -110,7 +110,7 @@ export default function Home() {
             Tempat praktisi, kreator, dan pemilik bisnis belajar AI lewat tutorial nyata, course terarah, dan kolaborasi yang relevan.
           </p>
           <div className="community-actions">
-            <a href="https://Wa.me/6285716280788" target="_blank" rel="noopener noreferrer" className="whatsapp-btn">
+            <a href="https://wa.me/6287773535692" target="_blank" rel="noopener noreferrer" className="whatsapp-btn">
               Join Komunitas -&gt;
             </a>
             <a href="#belajar" className="learn-btn">Mulai Belajar</a>
@@ -132,7 +132,7 @@ export default function Home() {
             <a href="https://www.tiktok.com/@aigrowthid" className="social-btn tiktok" target="_blank" rel="noopener noreferrer" title="TikTok" aria-label="TikTok AIGrowth">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
             </a>
-            <a href="https://Wa.me/6285716280788" className="social-btn whatsapp" target="_blank" rel="noopener noreferrer" title="WhatsApp" aria-label="WhatsApp AIGrowth">
+            <a href="https://wa.me/6287773535692" className="social-btn whatsapp" target="_blank" rel="noopener noreferrer" title="WhatsApp" aria-label="WhatsApp AIGrowth">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
             </a>
           </div>
