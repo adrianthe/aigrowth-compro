@@ -30,6 +30,35 @@
   text-align: center;
 }
 
+.success-message {
+  background: rgba(22, 163, 74, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: #86efac;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.login-secondary-btn {
+  align-self: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary, #7dd3fc);
+  cursor: pointer;
+  font: inherit;
+  padding: 4px 8px;
+}
+
+.login-secondary-btn:hover {
+  text-decoration: underline;
+}
+
+.login-secondary-btn:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
 .text-center {
   text-align: center;
 }
