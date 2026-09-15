@@ -1,7 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { upload } from '@vercel/blob/client';
 import { useNavigate } from 'react-router-dom';
+import AnalyticsDashboard from '../components/AnalyticsDashboard';
 import { CONTENT_TYPES, CONTENT_TYPE_LABELS } from '../data/contentDefaults';
+import {
+  deleteContentItem,
+  fetchAllContentItems,
+  saveContentItem,
+  uploadContentImage,
+} from '../lib/contentApi';
+import { supabase } from '../lib/supabaseClient';
 import { useLanguage } from '../contexts/LanguageContext';
 import './Admin.css';
 
@@ -43,10 +50,7 @@ export default function Admin() {
     setIsLoading(true);
     setErrorMessage('');
     try {
-      const response = await fetch('/api/content', { cache: 'no-store' });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || 'Konten gagal dimuat.');
-      setItems(Array.isArray(payload.items) ? payload.items : []);
+      setItems(await fetchAllContentItems());
     } catch (error) {
       setErrorMessage(error.message || 'Konten gagal dimuat.');
     } finally {
@@ -98,13 +102,10 @@ export default function Admin() {
 
     setIsUploading(true);
     try {
-      const safeName = file.name.toLowerCase().replace(/[^a-z0-9._-]+/g, '-');
-      const blob = await upload(`cms/images/${activeType}-${Date.now()}-${safeName}`, file, {
-        access: 'public',
-        handleUploadUrl: '/api/upload',
-        onUploadProgress: ({ percentage }) => setUploadProgress(Math.round(percentage)),
-      });
-      updateField('imageUrl', blob.url);
+      setUploadProgress(35);
+      const imageUrl = await uploadContentImage(file, activeType);
+      setUploadProgress(100);
+      updateField('imageUrl', imageUrl);
       setMessage('Foto berhasil diupload. Lanjut isi data lalu tekan Simpan.');
     } catch (error) {
       setErrorMessage(error.message || 'Foto gagal diupload.');
@@ -142,13 +143,10 @@ export default function Admin() {
 
     setErrorMessage('');
     setMessage('');
-    const response = await fetch(`/api/content?id=${encodeURIComponent(item.id)}`, {
-      method: 'DELETE',
-      credentials: 'same-origin',
-    });
-    const payload = await response.json();
-    if (!response.ok) {
-      setErrorMessage(payload.error || 'Konten gagal dihapus.');
+    try {
+      await deleteContentItem(item.id);
+    } catch (error) {
+      setErrorMessage(error.message || 'Konten gagal dihapus.');
       return;
     }
 
@@ -178,15 +176,7 @@ export default function Admin() {
     };
 
     try {
-      const response = await fetch('/api/content', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({ item }),
-      });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || 'Konten gagal disimpan.');
-
+      await saveContentItem(item);
       resetForm();
       await fetchItems();
       setMessage(`${CONTENT_TYPE_LABELS[activeType]} berhasil disimpan.`);
@@ -198,12 +188,7 @@ export default function Admin() {
   };
 
   const handleLogout = async () => {
-    await fetch('/api/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
-      body: JSON.stringify({ action: 'logout' }),
-    });
+    await supabase.auth.signOut();
     navigate('/login');
   };
 
@@ -220,6 +205,13 @@ export default function Admin() {
       </div>
 
       <div className="admin-tabs" role="tablist" aria-label="Jenis konten">
+        <button
+          type="button"
+          className={`admin-tab ${activeType === 'analytics' ? 'active' : ''}`}
+          onClick={() => changeType('analytics')}
+        >
+          Analytics
+        </button>
         {CONTENT_TYPES.map((type) => (
           <button
             key={type}
@@ -235,6 +227,10 @@ export default function Admin() {
       {message && <div className="success-message glass-panel">{message}</div>}
       {errorMessage && <div className="error-message glass-panel">{errorMessage}</div>}
 
+      {activeType === 'analytics' ? (
+        <AnalyticsDashboard />
+      ) : (
+        <>
       <form className="admin-form glass-panel" onSubmit={handleSubmit}>
         <h2>{editingId ? `Edit ${typeLabel}` : `Tambah ${typeLabel}`}</h2>
 
@@ -352,6 +348,8 @@ export default function Admin() {
           ))}
         </div>
       </section>
+        </>
+      )}
     </div>
   );
 }

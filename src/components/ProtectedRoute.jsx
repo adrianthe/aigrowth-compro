@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { isAdminUser, isSupabaseConfigured, supabase } from '../lib/supabaseClient';
 
 export default function ProtectedRoute({ children }) {
   const [authenticated, setAuthenticated] = useState(null);
@@ -7,15 +8,18 @@ export default function ProtectedRoute({ children }) {
   useEffect(() => {
     let active = true;
 
-    fetch('/api/auth', { credentials: 'same-origin', cache: 'no-store' })
-      .then((response) => response.json())
-      .then((payload) => {
-        if (active) setAuthenticated(Boolean(payload.authenticated));
-      })
-      .catch(() => {
+    async function verifySession() {
+      if (!isSupabaseConfigured) {
         if (active) setAuthenticated(false);
-      });
+        return;
+      }
 
+      const { data } = await supabase.auth.getSession();
+      const allowed = await isAdminUser(data.session?.user?.id);
+      if (active) setAuthenticated(allowed);
+    }
+
+    verifySession();
     return () => {
       active = false;
     };

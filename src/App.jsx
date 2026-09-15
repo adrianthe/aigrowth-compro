@@ -6,6 +6,7 @@ import Tools from './pages/Tools';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
+import TrafficTracker from './components/TrafficTracker';
 import { LanguageProvider } from './contexts/LanguageContext';
 import './App.css';
 
@@ -13,6 +14,7 @@ function App() {
   return (
     <LanguageProvider>
       <Router>
+        <TrafficTracker />
         <div className="app-wrapper">
           <Header />
           
