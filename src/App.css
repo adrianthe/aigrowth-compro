@@ -17,8 +17,8 @@
   border: 0;
   border-radius: 999px;
   cursor: pointer;
-  background: linear-gradient(120deg, #7eeeff 0%, #a88aff 52%, #d981ff 100%);
-  box-shadow: 0 12px 28px rgba(94, 118, 255, 0.2);
+  background: linear-gradient(120deg, #ffffff 0%, #bfeeff 52%, #67d9ff 100%);
+  box-shadow: 0 12px 28px rgba(0, 164, 220, 0.2);
   transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
 }
 
@@ -34,7 +34,7 @@
 .primary-btn:hover {
   transform: translateY(-3px);
   filter: saturate(1.12);
-  box-shadow: 0 17px 36px rgba(94, 118, 255, 0.32);
+  box-shadow: 0 17px 36px rgba(0, 180, 235, 0.3);
 }
 
 .primary-btn:hover::after {
@@ -50,13 +50,13 @@
 .tagline {
   display: inline-flex;
   padding: 8px 15px;
-  color: #a8f7ff;
+  color: #9ceeff;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   border-radius: 999px;
-  background: rgba(0, 229, 255, 0.07);
+  background: rgba(0, 210, 255, 0.07);
 }
 
 .hero-title {

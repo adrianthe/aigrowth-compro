@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-  --bg-color: #050413;
-  --bg-elevated: #0b0c25;
-  --text-primary: #f7f8ff;
-  --text-secondary: #9da9c4;
-  --accent-color: #00e5ff;
-  --accent-violet: #8b5cf6;
-  --accent-lime: #b7ff5a;
-  --accent-glow: rgba(0, 229, 255, 0.4);
-  --glass-bg: rgba(13, 16, 42, 0.58);
-  --glass-border: rgba(164, 189, 255, 0.13);
-  --glass-blur: blur(18px);
+  --bg-color: #04091e;
+  --bg-elevated: #08142f;
+  --text-primary: #ffffff;
+  --text-secondary: #9ba4b5;
+  --accent-color: #00d2ff;
+  --accent-violet: #3a7bd5;
+  --accent-lime: #8be9ff;
+  --accent-glow: rgba(0, 210, 255, 0.5);
+  --glass-bg: rgba(255, 255, 255, 0.035);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-blur: blur(14px);
   color-scheme: dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -34,9 +34,9 @@ body {
   color: var(--text-primary);
   font-family: 'Outfit', sans-serif;
   background:
-    radial-gradient(circle at 12% 8%, rgba(0, 229, 255, 0.12), transparent 25%),
-    radial-gradient(circle at 88% 16%, rgba(139, 92, 246, 0.16), transparent 30%),
-    linear-gradient(180deg, #07061b 0%, #050413 46%, #07061a 100%);
+    radial-gradient(circle at 50% -15%, rgba(0, 210, 255, 0.16), transparent 48%),
+    radial-gradient(circle at 88% 18%, rgba(37, 99, 235, 0.1), transparent 34%),
+    linear-gradient(180deg, #06102b 0%, #04091e 48%, #06122c 100%);
 }
 
 body::before {
@@ -46,7 +46,7 @@ body::before {
   z-index: -2;
   pointer-events: none;
   opacity: 0.55;
-  background: radial-gradient(circle at 50% 115%, rgba(64, 255, 186, 0.09), transparent 34%);
+  background: radial-gradient(circle at 50% 115%, rgba(0, 210, 255, 0.08), transparent 36%);
 }
 
 button,
@@ -85,8 +85,8 @@ a {
 }
 
 ::selection {
-  color: #050413;
-  background: #7eeeff;
+  color: #04091e;
+  background: #8be9ff;
 }
 
 .container {
@@ -120,7 +120,7 @@ a {
   border-radius: 50%;
   pointer-events: none;
   filter: blur(75px);
-  background: rgba(0, 229, 255, 0.12);
+  background: rgba(0, 210, 255, 0.12);
   animation: globalGlow 10s ease-in-out infinite alternate;
 }
 
