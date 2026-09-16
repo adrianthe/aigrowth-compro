@@ -28,7 +28,7 @@ export default function Tools() {
   return (
     <div className="tools-container fade-in">
       <div className="background-glow" style={{ top: '10%', left: '10%' }}></div>
-      <div className="background-glow" style={{ top: '30%', right: '10%', background: 'radial-gradient(circle, rgba(162, 59, 255, 0.15) 0%, transparent 70%)' }}></div>
+      <div className="background-glow" style={{ top: '30%', right: '10%', background: 'radial-gradient(circle, rgba(15, 48, 101, 0.2) 0%, transparent 70%)' }}></div>
 
       <section className="tools-hero container">
         <div className="glass-panel unified-section tools-intro">
