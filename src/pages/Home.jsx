@@ -55,8 +55,8 @@ function YouTubeCard({ video, index }) {
         </div>
         <h3>{video.title}</h3>
         <p>{video.description}</p>
-        <a href={video.url} target="_blank" rel="noopener noreferrer" className="youtube-external-link">
-          Buka di YouTube <span aria-hidden="true">&nearr;</span>
+        <a href={video.url} target="_blank" rel="noopener noreferrer" className="youtube-external-link" aria-label={`Tonton ${video.title} di YouTube`}>
+          <span>Tonton di YouTube</span><span className="external-arrow" aria-hidden="true">↗</span>
         </a>
       </div>
     </article>
@@ -144,7 +144,7 @@ export default function Home() {
           {videos.map((video, index) => <YouTubeCard key={video.id} video={video} index={index} />)}
         </div>
         <div className="youtube-channel-cta">
-          <a href="https://www.youtube.com/@Aigrowthid" target="_blank" rel="noopener noreferrer">Lihat semua video di YouTube -&gt;</a>
+          <a href="https://www.youtube.com/@Aigrowthid" target="_blank" rel="noopener noreferrer">Lihat semua video di YouTube →</a>
         </div>
       </section>
 
@@ -176,7 +176,7 @@ export default function Home() {
                     <div className="founder-badges"><span className="founder-role">FOUNDER</span></div>
                     <div className="founder-bottom">
                       <div className="founder-info"><h3>Adrian The</h3><p>AI Strategist & Creator</p></div>
-                      <a href="https://www.instagram.com/adrianthe_/" target="_blank" rel="noopener noreferrer" className="founder-link-btn" aria-label="Instagram Adrian The">&nearr;</a>
+                      <a href="https://www.instagram.com/adrianthe_/" target="_blank" rel="noopener noreferrer" className="founder-link-btn" aria-label="Instagram Adrian The">↗</a>
                     </div>
                   </div>
                 </div>
@@ -186,7 +186,7 @@ export default function Home() {
                     <div className="founder-badges"><span className="founder-role">CO-FOUNDER</span></div>
                     <div className="founder-bottom">
                       <div className="founder-info"><h3>Adriel Edgard</h3><p>AI Engineer & Innovator</p></div>
-                      <a href="https://www.instagram.com/adrieledgard/" target="_blank" rel="noopener noreferrer" className="founder-link-btn" aria-label="Instagram Adriel Edgard">&nearr;</a>
+                      <a href="https://www.instagram.com/adrieledgard/" target="_blank" rel="noopener noreferrer" className="founder-link-btn" aria-label="Instagram Adriel Edgard">↗</a>
                     </div>
                   </div>
                 </div>
