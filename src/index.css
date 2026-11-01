@@ -12,6 +12,19 @@
   --glass-bg: rgba(255, 255, 255, 0.035);
   --glass-border: rgba(255, 255, 255, 0.09);
   --glass-blur: blur(14px);
+  /* Shared AIGrowth theme (homepage look) used by every page */
+  --bg: #04091e; --bg-2: #06102b; --bg-3: #06122c;
+  --panel: linear-gradient(150deg, rgba(10, 29, 66, .88), rgba(5, 15, 42, .92));
+  --panel-solid: #08173a;
+  --glass: rgba(255, 255, 255, .055); --line: rgba(255, 255, 255, .09); --line-2: rgba(255, 255, 255, .18);
+  --text-2: #b9c3da; --muted: #8f9ab4; --dim: #5d6a88;
+  --cyan: #00d2ff; --cyan-2: #8be9ff; --cyan-3: #9ceeff; --blue: #3a7bd5;
+  --ok: #4ade80; --warn: #fbbf24; --danger: #ff6b81;
+  --grad: linear-gradient(100deg, #00d2ff 0%, #3a7bd5 52%, #8be9ff 100%);
+  --btn: linear-gradient(120deg, #ffffff 0%, #bfeeff 52%, #67d9ff 100%);
+  --btn-ink: #06101c;
+  --gutter: clamp(16px, 4vw, 48px); --maxw: 1240px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
   color-scheme: dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;

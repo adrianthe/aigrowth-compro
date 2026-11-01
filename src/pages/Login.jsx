@@ -112,15 +112,15 @@ export default function Login() {
   };
 
   return (
-    <div className="login-page container fade-in">
-      <div className="login-box glass-panel">
-        <h2 className="section-title text-center" style={{ fontSize: '32px' }}>
-          {mode === 'set-password' ? 'Buat Kata Sandi Admin' : t('admin_login_title')}
-        </h2>
-        <p className="hero-subtitle text-center">
+    <div className="ui login-page">
+      <div className="login-box panel">
+        <img className="login-logo" src="/logo.jpg" alt="AIGrowth" />
+        <span className="pill">Admin AIGrowth</span>
+        <h1>{mode === 'set-password' ? <>Buat kata sandi <span className="grad">admin.</span></> : <>Masuk ke <span className="grad">dashboard.</span></>}</h1>
+        <p className="lead">
           {mode === 'set-password'
             ? 'Buat kata sandi untuk mengaktifkan akses dashboard admin.'
-            : 'Masuk untuk mengelola konten dan melihat traffic AIGrowth.'}
+            : 'Kelola course, freebies, leads, dan lihat traffic AIGrowth.'}
         </p>
 
         <form onSubmit={mode === 'set-password' ? handleSetPassword : handleLogin} className="login-form">
@@ -128,12 +128,12 @@ export default function Login() {
           {noticeMsg && <div className="success-message">{noticeMsg}</div>}
 
           {mode === 'login' && (
-            <div className="form-group">
+            <div className="login-field">
               <label htmlFor="admin-email">Email admin</label>
               <input
                 id="admin-email"
                 type="email"
-                className="glass-input"
+                className="login-input"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 autoComplete="username"
@@ -142,12 +142,12 @@ export default function Login() {
             </div>
           )}
 
-          <div className="form-group">
+          <div className="login-field">
             <label htmlFor="admin-password">Kata sandi</label>
             <input
               id="admin-password"
               type="password"
-              className="glass-input"
+              className="login-input"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               autoComplete={mode === 'set-password' ? 'new-password' : 'current-password'}
@@ -156,12 +156,12 @@ export default function Login() {
           </div>
 
           {mode === 'set-password' && (
-            <div className="form-group">
+            <div className="login-field">
               <label htmlFor="admin-password-confirmation">Ulangi kata sandi</label>
               <input
                 id="admin-password-confirmation"
                 type="password"
-                className="glass-input"
+                className="login-input"
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}
                 autoComplete="new-password"
@@ -170,7 +170,7 @@ export default function Login() {
             </div>
           )}
 
-          <button type="submit" className="primary-btn submit-btn" disabled={isLoading}>
+          <button type="submit" className="btn btn-primary login-submit" disabled={isLoading}>
             {isLoading
               ? 'Memproses...'
               : mode === 'set-password' ? 'Simpan Kata Sandi' : t('admin_signin')}

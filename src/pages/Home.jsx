@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getDefaultContent } from '../data/contentDefaults';
+import CourseCard from '../components/CourseCard';
+import SiteFooter from '../components/SiteFooter';
+import { Arrow, WhatsAppIcon } from '../components/ui';
+import { INFINITY_PATH, pad } from '../lib/brand';
 import { fetchContentItems, getContentPath, getYouTubeVideoId } from '../lib/contentApi';
 import { initLanding } from './home/landingEngine';
 import './Home.css';
 
 const WHATSAPP_URL = 'https://wa.me/6287773535692';
 const YOUTUBE_URL = 'https://www.youtube.com/@Aigrowthid';
-const INFINITY_PATH = 'M24 12c-3.6-4.4-7-6.6-10.2-6.6a6.6 6.6 0 0 0 0 13.2C17 18.6 20.4 16.4 24 12zm0 0c3.6 4.4 7 6.6 10.2 6.6a6.6 6.6 0 0 0 0-13.2C31 5.4 27.6 7.6 24 12z';
 const CHAPTER_LABELS = ['Mulai', 'Belajar', 'Praktik', 'Tumbuh'];
 const PRELOADER_KEY = 'aigrowth-home-preloaded';
 
@@ -33,8 +36,6 @@ const FAQ = [
   ['Bisa untuk training tim atau perusahaan?', 'Bisa. AIGrowth sudah mengisi training, workshop, dan webinar bersama Paragon Corp, Smesco, Cekat AI, Om Botak, sampai talkshow di Elshinta Radio.'],
 ];
 
-const pad = (n) => String(n).padStart(2, '0');
-
 function Split({ parts, start = 0 }) {
   let index = start;
   return parts.flatMap((part, pi) => {
@@ -49,23 +50,6 @@ function Split({ parts, start = 0 }) {
         )
     ));
   });
-}
-
-function Arrow({ size = 15 }) {
-  return (
-    <svg className="i" viewBox="0 0 24 24" style={{ width: size, height: size }} aria-hidden="true">
-      <path d="M7 17 17 7M8 7h9v9" />
-    </svg>
-  );
-}
-
-function WhatsAppIcon({ size = 18 }) {
-  return (
-    <svg className="i" viewBox="0 0 24 24" style={{ width: size, height: size }} aria-hidden="true">
-      <path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z" />
-      <path d="M9 9.2c.2 2.9 2.9 5.6 5.8 5.8" />
-    </svg>
-  );
 }
 
 function Ticker({ items }) {
@@ -102,40 +86,6 @@ function CountUp({ to, run }) {
   }, [run, to]);
 
   return pad(value);
-}
-
-function CourseCard({ course, index }) {
-  const free = /free|gratis/i.test(`${course.category} ${course.title} ${course.label}`);
-  return (
-    <article className="course">
-      <div className="cimg">
-        {course.imageUrl ? (
-          <img loading="lazy" src={course.imageUrl} alt={course.title} />
-        ) : (
-          <span className="art" aria-hidden="true">
-            <svg viewBox="0 0 48 24"><path d={INFINITY_PATH} fill="none" stroke="url(#lp-cyan)" strokeWidth="3.4" strokeLinecap="round" strokeDasharray="3.4 1.7" /></svg>
-          </span>
-        )}
-        {free ? <span className="tg pick">Gratis</span> : course.featured && <span className="tg pick">Pilihan</span>}
-        <span className="num">{pad(index + 1)}</span>
-      </div>
-      <div className="cbody">
-        <small>{course.category || 'Course'}</small>
-        <h3>{course.title}</h3>
-        <p>{course.description}</p>
-        <div className="cfoot">
-          <span>{free ? 'Gratis' : 'Online course'}</span>
-          {getContentPath(course) ? (
-            <Link to={getContentPath(course)}>{(course.label || 'Lihat detail').replace(/!+$/, '')} <Arrow size={14} /></Link>
-          ) : course.url ? (
-            <a href={course.url} target="_blank" rel="noopener noreferrer">{(course.label || 'Lihat detail').replace(/!+$/, '')} <Arrow size={14} /></a>
-          ) : (
-            <span>Segera hadir</span>
-          )}
-        </div>
-      </div>
-    </article>
-  );
 }
 
 function EventTile({ event, index }) {
@@ -236,13 +186,6 @@ export default function Home() {
 
   return (
     <div className={`lp${ready ? ' is-ready' : ''}`} ref={rootRef}>
-      <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
-        <defs>
-          <linearGradient id="lp-cyan" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#00d2ff" /><stop offset=".52" stopColor="#3a7bd5" /><stop offset="1" stopColor="#8be9ff" /></linearGradient>
-          <linearGradient id="lp-cyan-h" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#00d2ff" stopOpacity="0" /><stop offset=".5" stopColor="#00d2ff" /><stop offset="1" stopColor="#8be9ff" stopOpacity="0" /></linearGradient>
-        </defs>
-      </svg>
-
       {showPreloader && (
         <div className="lp-preloader" aria-hidden="true">
           <div className="pl">
@@ -521,21 +464,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="lp-footer">
-        <div className="wrap">
-          <div className="foot-grid">
-            <div>
-              <Link to="/" className="brand"><img src="/logo.jpg" alt="" /><span>AIGrowth</span></Link>
-              <p>Komunitas AI praktis Indonesia. Tutorial nyata, course terarah, dan kolaborasi yang relevan.</p>
-            </div>
-            <div><h4>BELAJAR</h4><ul><li><Link to="/courses">Courses</Link></li><li><a href="#belajar">Video gratis</a></li><li><Link to="/tools">Tools</Link></li></ul></div>
-            <div><h4>KOMUNITAS</h4><ul><li><a href="#event">Event</a></li><li><a href="#tim">Untuk tim</a></li><li><a href="#founder">Founder</a></li><li><a href="#faq">FAQ</a></li></ul></div>
-            <div><h4>IKUTI</h4><ul><li><a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer">YouTube</a></li><li><a href="https://www.instagram.com/aigrowth.id/" target="_blank" rel="noopener noreferrer">Instagram</a></li><li><a href="https://www.tiktok.com/@aigrowthid" target="_blank" rel="noopener noreferrer">TikTok</a></li><li><a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">WhatsApp</a></li></ul></div>
-          </div>
-          <svg className="foot-line" viewBox="0 0 1200 22" preserveAspectRatio="none" aria-hidden="true"><path d="M0 11 C 150 -4, 300 26, 450 11 S 750 -4, 900 11 S 1100 26, 1200 11" /></svg>
-          <div className="foot-bot"><span>© 2026 AIGrowth.id</span><span>Belajar AI, praktikkan, terus tumbuh.</span></div>
-        </div>
-      </footer>
+      <SiteFooter />
 
       <dialog
         className="vmodal"

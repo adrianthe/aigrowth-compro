@@ -119,52 +119,60 @@ export default function LeadsPanel() {
   );
 
   return (
-    <div className="leads-admin">
-      {errorMessage && <div className="error-message glass-panel">{errorMessage}</div>}
+    <section className="adm-view leads-admin">
+      <header className="adm-view-head">
+        <div>
+          <span className="adm-pill">Leads &amp; Penjualan</span>
+          <h1>Siapa yang daftar dan bayar</h1>
+          <p>Leads dari form aigrowth.id dan pembayaran yang masuk lewat webhook Mayar.</p>
+        </div>
+      </header>
+
+      {errorMessage && <div className="adm-alert">{errorMessage}</div>}
 
       <div className="leads-stats">
         {stats.map(([label, value]) => (
-          <div className="leads-stat glass-panel" key={label}>
+          <div className="leads-stat adm-card" key={label}>
             <span>{label}</span>
             <strong>{value}</strong>
           </div>
         ))}
       </div>
 
-      <div className="leads-toolbar glass-panel">
+      <div className="leads-toolbar adm-card">
         <div className="leads-switch" role="tablist">
           <button type="button" className={view === 'leads' ? 'active' : ''} onClick={() => setView('leads')}>Leads</button>
           <button type="button" className={view === 'payments' ? 'active' : ''} onClick={() => setView('payments')}>Pembayaran Mayar</button>
         </div>
         {view === 'leads' && (
           <>
-            <select className="glass-input" value={kind} onChange={(event) => setKind(event.target.value)} aria-label="Jenis">
+            <select className="adm-input" value={kind} onChange={(event) => setKind(event.target.value)} aria-label="Jenis">
               <option value="">Semua jenis</option>
               <option value="checkout">Checkout</option>
               <option value="freebie">Freebies</option>
             </select>
-            <select className="glass-input" value={status} onChange={(event) => setStatus(event.target.value)} aria-label="Status">
+            <select className="adm-input" value={status} onChange={(event) => setStatus(event.target.value)} aria-label="Status">
               <option value="">Semua status</option>
               <option value="new">Belum bayar</option>
               <option value="paid">Sudah bayar</option>
             </select>
-            <select className="glass-input" value={contentId} onChange={(event) => setContentId(event.target.value)} aria-label="Produk">
+            <select className="adm-input" value={contentId} onChange={(event) => setContentId(event.target.value)} aria-label="Produk">
               <option value="">Semua produk</option>
               {offers.map(([id, title]) => <option key={id} value={id}>{title}</option>)}
             </select>
-            <input className="glass-input" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari nama, email, WA..." />
+            <input className="adm-input" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari nama, email, WA..." />
           </>
         )}
         <div className="leads-toolbar-actions">
-          <button type="button" className="cancel-btn" onClick={load}>Muat ulang</button>
-          <button type="button" className="cancel-btn" onClick={view === 'leads' ? exportLeads : exportPayments}>Export CSV</button>
+          <button type="button" className="adm-btn adm-btn-ghost adm-btn-sm" onClick={load}>Muat ulang</button>
+          <button type="button" className="adm-btn adm-btn-ghost adm-btn-sm" onClick={view === 'leads' ? exportLeads : exportPayments}>Export CSV</button>
         </div>
       </div>
 
       {view === 'leads' ? (
-        <div className="leads-table glass-panel">
-          {isLoading && <div className="empty-state">Memuat...</div>}
-          {!isLoading && visible.length === 0 && <div className="empty-state">Belum ada leads.</div>}
+        <div className="leads-table adm-card">
+          {isLoading && <div className="adm-empty">Memuat...</div>}
+          {!isLoading && visible.length === 0 && <div className="adm-empty">Belum ada leads.</div>}
           {visible.map((lead) => (
             <div className="leads-row" key={lead.id}>
               <div className="leads-who">
@@ -182,16 +190,16 @@ export default function LeadsPanel() {
                 <span>{formatDate(lead.created_at)}</span>
               </div>
               <div className="leads-actions">
-                <a className="edit-btn" href={followUpLink(lead)} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-                <button type="button" className="delete-btn" onClick={() => handleDelete(lead)}>Hapus</button>
+                <a className="adm-btn adm-btn-soft adm-btn-sm" href={followUpLink(lead)} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                <button type="button" className="adm-btn adm-btn-danger adm-btn-sm" onClick={() => handleDelete(lead)}>Hapus</button>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="leads-table glass-panel">
-          {isLoading && <div className="empty-state">Memuat...</div>}
-          {!isLoading && payments.length === 0 && <div className="empty-state">Belum ada pembayaran yang masuk lewat webhook Mayar.</div>}
+        <div className="leads-table adm-card">
+          {isLoading && <div className="adm-empty">Memuat...</div>}
+          {!isLoading && payments.length === 0 && <div className="adm-empty">Belum ada pembayaran yang masuk lewat webhook Mayar.</div>}
           {payments.map((payment) => (
             <div className="leads-row" key={payment.transaction_id}>
               <div className="leads-who">
@@ -211,6 +219,6 @@ export default function LeadsPanel() {
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }

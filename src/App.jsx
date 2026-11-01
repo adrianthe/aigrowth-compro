@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Studio from './pages/Studio';
@@ -9,14 +9,25 @@ import Offer from './pages/Offer';
 import ThankYou from './pages/ThankYou';
 import ProtectedRoute from './components/ProtectedRoute';
 import TrafficTracker from './components/TrafficTracker';
+import SiteFooter from './components/SiteFooter';
+import { SvgDefs } from './components/ui';
 import { LanguageProvider } from './contexts/LanguageContext';
 import './App.css';
+
+// The homepage renders its own footer; admin screens don't need one
+const NO_FOOTER = ['/', '/admin', '/login'];
+
+function Footer() {
+  const { pathname } = useLocation();
+  return NO_FOOTER.includes(pathname) ? null : <div className="ui"><SiteFooter /></div>;
+}
 
 function App() {
   return (
     <LanguageProvider>
       <Router>
         <TrafficTracker />
+        <SvgDefs />
         <div className="app-wrapper">
           <Header />
           
@@ -38,6 +49,7 @@ function App() {
               } />
             </Routes>
           </main>
+          <Footer />
         </div>
       </Router>
     </LanguageProvider>

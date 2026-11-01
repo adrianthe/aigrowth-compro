@@ -111,10 +111,11 @@ export default function AnalyticsDashboard() {
   }, [events]);
 
   return (
-    <section className="analytics-dashboard">
-      <div className="analytics-toolbar">
+    <section className="adm-view analytics-dashboard">
+      <div className="adm-view-head analytics-toolbar">
         <div>
-          <h2>Ringkasan Traffic</h2>
+          <span className="adm-pill">Analytics</span>
+          <h1>Ringkasan traffic</h1>
           <p>Data pengunjung dan klik keluar yang tercatat langsung dari website.</p>
         </div>
         <div className="range-selector" aria-label="Rentang analytics">
@@ -126,28 +127,28 @@ export default function AnalyticsDashboard() {
         </div>
       </div>
 
-      {errorMessage && <div className="error-message glass-panel">{errorMessage}</div>}
+      {errorMessage && <div className="adm-alert">{errorMessage}</div>}
       {isLoading ? (
-        <div className="glass-panel empty-state">Memuat analytics...</div>
+        <div className="adm-empty">Memuat analytics...</div>
       ) : (
         <>
           <div className="analytics-metrics">
-            <article className="analytics-metric glass-panel"><span>Page views</span><strong>{report.pageViews.toLocaleString('id-ID')}</strong></article>
-            <article className="analytics-metric glass-panel"><span>Pengunjung</span><strong>{report.visitors.toLocaleString('id-ID')}</strong></article>
-            <article className="analytics-metric glass-panel"><span>Klik keluar</span><strong>{report.outboundClicks.toLocaleString('id-ID')}</strong></article>
-            <article className="analytics-metric glass-panel"><span>Rasio klik</span><strong>{report.clickRate}%</strong></article>
+            <article className="analytics-metric adm-card"><span>Page views</span><strong>{report.pageViews.toLocaleString('id-ID')}</strong></article>
+            <article className="analytics-metric adm-card"><span>Pengunjung</span><strong>{report.visitors.toLocaleString('id-ID')}</strong></article>
+            <article className="analytics-metric adm-card"><span>Klik keluar</span><strong>{report.outboundClicks.toLocaleString('id-ID')}</strong></article>
+            <article className="analytics-metric adm-card"><span>Rasio klik</span><strong>{report.clickRate}%</strong></article>
           </div>
 
           <div className="analytics-panels">
-            <article className="analytics-panel glass-panel">
+            <article className="analytics-panel adm-card">
               <h3>Halaman terpopuler</h3>
               <RankingList items={report.pages} emptyText="Belum ada page view." />
             </article>
-            <article className="analytics-panel glass-panel">
+            <article className="analytics-panel adm-card">
               <h3>Sumber traffic</h3>
               <RankingList items={report.referrers} emptyText="Belum ada data sumber traffic." />
             </article>
-            <article className="analytics-panel glass-panel analytics-panel-wide">
+            <article className="analytics-panel adm-card analytics-panel-wide">
               <h3>Traffic diarahkan ke mana</h3>
               <RankingList items={report.destinations} emptyText="Belum ada klik menuju situs lain." />
             </article>

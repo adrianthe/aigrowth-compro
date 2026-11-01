@@ -1,10 +1,10 @@
 /* Course sales pages and freebie pages (/courses/:slug, /gratis/:slug) */
 .of-page {
-  --of-panel: linear-gradient(150deg, rgba(10, 29, 66, 0.88), rgba(5, 15, 42, 0.92));
-  --of-line: rgba(255, 255, 255, 0.09);
-  --of-cyan: #00d2ff;
-  --of-soft: #b9c3da;
-  --of-muted: #8f9ab4;
+  --of-panel: var(--panel);
+  --of-line: var(--line);
+  --of-cyan: var(--cyan);
+  --of-soft: var(--text-2);
+  --of-muted: var(--muted);
   width: 100%;
   max-width: 1160px;
   margin: 0 auto;
