@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { PORTAL_URL } from '../lib/site';
 import './Header.css';
 
 export default function Header() {
@@ -16,6 +17,7 @@ export default function Header() {
         <nav className="nav-links">
           <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_home')}</NavLink>
           <NavLink to="/courses" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_courses')}</NavLink>
+          <NavLink to="/gratis" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_freebies')}</NavLink>
           <NavLink to="/tools" className={({ isActive }) => isActive ? "active" : ""}>{t('nav_tools')}</NavLink>
         </nav>
 
@@ -27,6 +29,9 @@ export default function Header() {
           >
             {language.toUpperCase()}
           </button>
+          {PORTAL_URL && (
+            <a href={PORTAL_URL} className="portal-link" target="_blank" rel="noopener noreferrer">{t('nav_portal')}</a>
+          )}
           <button className="primary-btn" onClick={() => navigate('/courses')}>
             {t('get_started')}
           </button>

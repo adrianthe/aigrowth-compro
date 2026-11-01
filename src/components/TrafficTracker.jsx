@@ -1,14 +1,18 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { trackTrafficEvent } from '../lib/analytics';
+import { captureAttribution, initTracking, isPrivatePath, trackPageView } from '../lib/tracking';
 
 export default function TrafficTracker() {
   const location = useLocation();
 
   useEffect(() => {
-    if (!['/admin', '/login'].includes(location.pathname)) {
-      trackTrafficEvent('page_view', { pagePath: `${location.pathname}${location.search}` });
-    }
+    if (isPrivatePath(location.pathname)) return;
+    const pagePath = `${location.pathname}${location.search}`;
+    captureAttribution(location.search, location.pathname);
+    initTracking();
+    trackPageView(pagePath);
+    trackTrafficEvent('page_view', { pagePath });
   }, [location.pathname, location.search]);
 
   useEffect(() => {

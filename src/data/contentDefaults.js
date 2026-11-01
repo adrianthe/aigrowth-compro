@@ -1,9 +1,10 @@
-export const CONTENT_TYPES = ['video', 'event', 'course', 'tool'];
+export const CONTENT_TYPES = ['video', 'event', 'course', 'freebie', 'tool'];
 
 export const CONTENT_TYPE_LABELS = {
   video: 'Video YouTube',
   event: 'Event',
   course: 'Course',
+  freebie: 'Freebies',
   tool: 'Tool',
 };
 

@@ -1,11 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AnalyticsDashboard from '../components/AnalyticsDashboard';
+import LeadsPanel from '../components/LeadsPanel';
 import { CONTENT_TYPES, CONTENT_TYPE_LABELS } from '../data/contentDefaults';
 import {
   deleteContentItem,
   fetchAllContentItems,
+  fetchDeliveryUrl,
+  getContentPath,
   saveContentItem,
+  saveDeliveryUrl,
+  slugify,
   uploadContentImage,
 } from '../lib/contentApi';
 import { supabase } from '../lib/supabaseClient';
@@ -24,7 +29,62 @@ const emptyForm = {
   eventDate: '',
   label: '',
   featured: false,
+  slug: '',
+  price: '',
+  comparePrice: '',
+  checkoutUrl: '',
+  deliveryUrl: '',
+  headline: '',
+  subheadline: '',
+  videoUrl: '',
+  ctaLabel: '',
+  benefits: '',
+  audience: '',
+  curriculum: '',
+  faq: '',
 };
+
+const SALES_TYPES = ['course', 'freebie'];
+
+const toLines = (text) => text.split('\n').map((line) => line.trim()).filter(Boolean);
+
+// "Judul | detail" per line keeps the sales page editable without a page builder
+function splitPairs(text, [first, second]) {
+  return toLines(text).map((line) => {
+    const [head, ...rest] = line.split('|');
+    return { [first]: head.trim(), [second]: rest.join('|').trim() };
+  });
+}
+
+const joinPairs = (items = [], [first, second]) => items
+  .map((item) => (item[second] ? `${item[first]} | ${item[second]}` : item[first]))
+  .join('\n');
+
+function salesFromForm(form) {
+  return {
+    headline: form.headline.trim(),
+    subheadline: form.subheadline.trim(),
+    videoUrl: form.videoUrl.trim(),
+    ctaLabel: form.ctaLabel.trim(),
+    benefits: toLines(form.benefits),
+    audience: toLines(form.audience),
+    curriculum: splitPairs(form.curriculum, ['title', 'detail']),
+    faq: splitPairs(form.faq, ['q', 'a']).filter((item) => item.a),
+  };
+}
+
+function salesToForm(sales = {}) {
+  return {
+    headline: sales.headline || '',
+    subheadline: sales.subheadline || '',
+    videoUrl: sales.videoUrl || '',
+    ctaLabel: sales.ctaLabel || '',
+    benefits: (sales.benefits || []).join('\n'),
+    audience: (sales.audience || []).join('\n'),
+    curriculum: joinPairs(sales.curriculum, ['title', 'detail']),
+    faq: joinPairs(sales.faq, ['q', 'a']),
+  };
+}
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -125,6 +185,7 @@ export default function Admin() {
     setActiveType(item.type);
     setEditingId(item.id);
     setForm({
+      ...emptyForm,
       title: item.title || '',
       description: item.description || '',
       category: item.category || '',
@@ -133,9 +194,20 @@ export default function Admin() {
       eventDate: item.eventDate || '',
       label: item.label || '',
       featured: Boolean(item.featured),
+      slug: item.slug || '',
+      price: item.price ?? '',
+      comparePrice: item.comparePrice ?? '',
+      checkoutUrl: item.checkoutUrl || '',
+      ...salesToForm(item.sales),
     });
     setUploadProgress(0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (item.type === 'freebie') {
+      fetchDeliveryUrl(item.id)
+        .then((deliveryUrl) => setForm((current) => ({ ...current, deliveryUrl })))
+        .catch((error) => setErrorMessage(error.message || 'Link materi gagal dimuat.'));
+    }
   };
 
   const handleDelete = async (item) => {
@@ -164,19 +236,38 @@ export default function Admin() {
       setErrorMessage('Link video YouTube wajib diisi.');
       return;
     }
+    if (form.slug && form.slug !== slugify(form.slug)) {
+      setErrorMessage('Alamat halaman hanya boleh huruf kecil, angka, dan tanda strip. Contoh: ai-influencer');
+      return;
+    }
+    if (form.checkoutUrl && !/^https:\/\//.test(form.checkoutUrl.trim())) {
+      setErrorMessage('Link checkout Mayar harus diawali https://');
+      return;
+    }
+    if (activeType === 'freebie' && !form.slug) {
+      setErrorMessage('Freebies butuh alamat halaman supaya form-nya bisa dibuka.');
+      return;
+    }
 
     setIsSubmitting(true);
     setErrorMessage('');
     setMessage('');
 
+    const isSalesType = SALES_TYPES.includes(activeType);
     const item = {
       ...form,
       id: editingId || undefined,
       type: activeType,
+      slug: isSalesType ? form.slug : '',
+      price: activeType === 'course' ? form.price : '',
+      comparePrice: activeType === 'course' ? form.comparePrice : '',
+      checkoutUrl: activeType === 'course' ? form.checkoutUrl : '',
+      sales: isSalesType ? salesFromForm(form) : {},
     };
 
     try {
-      await saveContentItem(item);
+      const saved = await saveContentItem(item);
+      if (activeType === 'freebie') await saveDeliveryUrl(saved.id, form.deliveryUrl);
       resetForm();
       await fetchItems();
       setMessage(`${CONTENT_TYPE_LABELS[activeType]} berhasil disimpan.`);
@@ -199,7 +290,7 @@ export default function Admin() {
       <div className="admin-header">
         <div>
           <h1 className="section-title">Admin Konten</h1>
-          <p className="hero-subtitle">Tambah Video YouTube, Event, Course, dan Tools tanpa mengubah coding.</p>
+          <p className="hero-subtitle">Kelola video, event, course, freebies, tools, dan leads tanpa mengubah coding.</p>
         </div>
         <button onClick={handleLogout} className="logout-btn">{t('admin_logout')}</button>
       </div>
@@ -211,6 +302,13 @@ export default function Admin() {
           onClick={() => changeType('analytics')}
         >
           Analytics
+        </button>
+        <button
+          type="button"
+          className={`admin-tab ${activeType === 'leads' ? 'active' : ''}`}
+          onClick={() => changeType('leads')}
+        >
+          Leads & Penjualan
         </button>
         {CONTENT_TYPES.map((type) => (
           <button
@@ -229,6 +327,8 @@ export default function Admin() {
 
       {activeType === 'analytics' ? (
         <AnalyticsDashboard />
+      ) : activeType === 'leads' ? (
+        <LeadsPanel />
       ) : (
         <>
       <form className="admin-form glass-panel" onSubmit={handleSubmit}>
@@ -311,6 +411,88 @@ export default function Admin() {
           </div>
         )}
 
+        {SALES_TYPES.includes(activeType) && (
+          <fieldset className="admin-fieldset">
+            <legend>Halaman {activeType === 'course' ? 'jualan' : 'freebies'} di aigrowth.id</legend>
+
+            <div className="form-group">
+              <label htmlFor="sales-slug">Alamat halaman</label>
+              <div className="slug-input">
+                <input id="sales-slug" type="text" value={form.slug} onChange={(event) => updateField('slug', event.target.value.toLowerCase())} className="glass-input" placeholder="contoh: ai-influencer" />
+                <button type="button" className="cancel-btn" onClick={() => updateField('slug', slugify(form.title))} disabled={!form.title}>Dari judul</button>
+              </div>
+              <span className="field-hint">
+                {form.slug ? `Halaman: aigrowth.id${activeType === 'course' ? '/courses/' : '/gratis/'}${form.slug}` : activeType === 'course' ? 'Kosongkan kalau course ini masih pakai link luar (Scalev/Lynk).' : 'Wajib diisi untuk freebies.'}
+              </span>
+            </div>
+
+            {activeType === 'course' && (
+              <>
+                <div className="admin-form-grid">
+                  <div className="form-group">
+                    <label htmlFor="sales-price">Harga (Rp)</label>
+                    <input id="sales-price" type="text" inputMode="numeric" value={form.price} onChange={(event) => updateField('price', event.target.value.replace(/[^0-9]/g, ''))} className="glass-input" placeholder="contoh: 199000" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="sales-compare">Harga coret (opsional)</label>
+                    <input id="sales-compare" type="text" inputMode="numeric" value={form.comparePrice} onChange={(event) => updateField('comparePrice', event.target.value.replace(/[^0-9]/g, ''))} className="glass-input" placeholder="contoh: 499000" />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="sales-checkout">Link checkout Mayar</label>
+                  <input id="sales-checkout" type="url" value={form.checkoutUrl} onChange={(event) => updateField('checkoutUrl', event.target.value)} className="glass-input" placeholder="https://namakamu.myr.id/course/..." />
+                  <span className="field-hint">Salin dari halaman produk Online Course di Mayar. Di Mayar, isi Redirect URL produk ke https://www.aigrowth.id/terima-kasih</span>
+                </div>
+              </>
+            )}
+
+            {activeType === 'freebie' && (
+              <div className="form-group">
+                <label htmlFor="sales-delivery">Link materi (rahasia)</label>
+                <input id="sales-delivery" type="url" value={form.deliveryUrl} onChange={(event) => updateField('deliveryUrl', event.target.value)} className="glass-input" placeholder="https://drive.google.com/..." />
+                <span className="field-hint">Baru muncul setelah pengunjung isi nama + WhatsApp. Kosongkan kalau materi dikirim manual lewat WA.</span>
+              </div>
+            )}
+
+            <div className="form-group">
+              <label htmlFor="sales-headline">Headline (opsional)</label>
+              <input id="sales-headline" type="text" value={form.headline} onChange={(event) => updateField('headline', event.target.value)} className="glass-input" placeholder="contoh: Bikin AI influencer yang mukanya konsisten di setiap konten" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="sales-subheadline">Subheadline (opsional)</label>
+              <textarea id="sales-subheadline" value={form.subheadline} onChange={(event) => updateField('subheadline', event.target.value)} className="glass-input" rows={2} placeholder="Kalimat pendek di bawah judul. Kalau kosong, deskripsi yang dipakai." />
+            </div>
+            <div className="admin-form-grid">
+              <div className="form-group">
+                <label htmlFor="sales-video">Video intro YouTube (opsional)</label>
+                <input id="sales-video" type="url" value={form.videoUrl} onChange={(event) => updateField('videoUrl', event.target.value)} className="glass-input" placeholder="https://youtu.be/..." />
+              </div>
+              <div className="form-group">
+                <label htmlFor="sales-cta">Teks tombol (opsional)</label>
+                <input id="sales-cta" type="text" value={form.ctaLabel} onChange={(event) => updateField('ctaLabel', event.target.value)} className="glass-input" placeholder={activeType === 'course' ? 'Daftar Sekarang' : 'Ambil Gratis'} />
+              </div>
+            </div>
+            <div className="form-group">
+              <label htmlFor="sales-benefits">Yang didapat (satu per baris)</label>
+              <textarea id="sales-benefits" value={form.benefits} onChange={(event) => updateField('benefits', event.target.value)} className="glass-input" rows={4} placeholder={'Bikin karakter AI yang konsisten\nProduksi 30 konten dalam sehari'} />
+            </div>
+            {activeType === 'course' && (
+              <div className="form-group">
+                <label htmlFor="sales-curriculum">Isi materi / modul (satu per baris: Judul | penjelasan)</label>
+                <textarea id="sales-curriculum" value={form.curriculum} onChange={(event) => updateField('curriculum', event.target.value)} className="glass-input" rows={5} placeholder={'Dasar prompting | Cara menyusun prompt yang konsisten\nWorkflow produksi | Dari ide sampai siap posting'} />
+              </div>
+            )}
+            <div className="form-group">
+              <label htmlFor="sales-audience">Cocok untuk (satu per baris)</label>
+              <textarea id="sales-audience" value={form.audience} onChange={(event) => updateField('audience', event.target.value)} className="glass-input" rows={3} placeholder={'Kreator yang mau konten lebih cepat\nPemilik bisnis yang belum pernah pakai AI'} />
+            </div>
+            <div className="form-group">
+              <label htmlFor="sales-faq">FAQ (satu per baris: Pertanyaan | Jawaban)</label>
+              <textarea id="sales-faq" value={form.faq} onChange={(event) => updateField('faq', event.target.value)} className="glass-input" rows={4} placeholder={'Aksesnya berapa lama? | Selamanya, termasuk update materi.'} />
+            </div>
+          </fieldset>
+        )}
+
         {(activeType === 'course' || activeType === 'tool') && (
           <label className="featured-toggle">
             <input type="checkbox" checked={form.featured} onChange={(event) => updateField('featured', event.target.checked)} />
@@ -339,6 +521,9 @@ export default function Admin() {
                 <h3>{item.title}</h3>
                 <p className="item-prompt">{item.description}</p>
                 {item.type === 'video' && item.url && <a className="item-link" href={item.url} target="_blank" rel="noopener noreferrer">Buka video YouTube</a>}
+                {SALES_TYPES.includes(item.type) && (getContentPath(item)
+                  ? <a className="item-page-link" href={getContentPath(item)} target="_blank" rel="noopener noreferrer">Buka halaman {getContentPath(item)} ↗</a>
+                  : <span className="item-page-link is-missing">Belum punya halaman di aigrowth.id</span>)}
               </div>
               <div className="item-actions">
                 <button onClick={() => handleEdit(item)} className="edit-btn">{t('admin_btn_edit')}</button>

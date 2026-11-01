@@ -13,6 +13,11 @@ function fromDatabase(item) {
     eventDate: item.event_date || '',
     label: item.label || '',
     featured: Boolean(item.featured),
+    slug: item.slug || '',
+    price: item.price ?? null,
+    comparePrice: item.compare_price ?? null,
+    checkoutUrl: item.checkout_url || '',
+    sales: item.sales || {},
     createdAt: item.created_at,
     updatedAt: item.updated_at,
   };
@@ -30,8 +35,41 @@ function toDatabase(item) {
     event_date: item.eventDate || null,
     label: item.label.trim() || null,
     featured: Boolean(item.featured),
+    slug: item.slug?.trim() || null,
+    price: toPrice(item.price),
+    compare_price: toPrice(item.comparePrice),
+    checkout_url: item.checkoutUrl?.trim() || null,
+    sales: item.sales || {},
     published: true,
   };
+}
+
+function toPrice(value) {
+  if (value === '' || value === null || value === undefined) return null;
+  const number = Number(String(value).replace(/[^0-9]/g, ''));
+  return Number.isFinite(number) ? number : null;
+}
+
+// Courses and freebies with a slug get their own page on aigrowth.id
+export function getContentPath(item) {
+  if (!item?.slug) return '';
+  if (item.type === 'course') return `/courses/${item.slug}`;
+  if (item.type === 'freebie') return `/gratis/${item.slug}`;
+  return '';
+}
+
+export function formatRupiah(value) {
+  if (value === null || value === undefined || value === '') return '';
+  return `Rp${Number(value).toLocaleString('id-ID')}`;
+}
+
+export function slugify(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
 }
 
 export async function fetchContentItems(type) {
@@ -49,6 +87,43 @@ export async function fetchContentItems(type) {
   const { data, error } = await query;
   if (error) return fallback;
   return data.map(fromDatabase);
+}
+
+export async function fetchContentBySlug(type, slug) {
+  const fallback = getDefaultContent(type).find((item) => item.slug === slug) || null;
+  if (!isSupabaseConfigured) return fallback;
+
+  const { data, error } = await supabase
+    .from('content_items')
+    .select('*')
+    .eq('type', type)
+    .eq('slug', slug)
+    .eq('published', true)
+    .maybeSingle();
+
+  if (error) return fallback;
+  return data ? fromDatabase(data) : null;
+}
+
+export async function fetchDeliveryUrl(contentId) {
+  if (!isSupabaseConfigured || !contentId) return '';
+  const { data, error } = await supabase
+    .from('offer_deliveries')
+    .select('delivery_url')
+    .eq('content_id', contentId)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.delivery_url || '';
+}
+
+export async function saveDeliveryUrl(contentId, deliveryUrl) {
+  if (!isSupabaseConfigured) throw new Error('Supabase belum dikonfigurasi.');
+  const url = deliveryUrl.trim();
+  const query = url
+    ? supabase.from('offer_deliveries').upsert({ content_id: contentId, delivery_url: url })
+    : supabase.from('offer_deliveries').delete().eq('content_id', contentId);
+  const { error } = await query;
+  if (error) throw error;
 }
 
 export async function fetchAllContentItems() {

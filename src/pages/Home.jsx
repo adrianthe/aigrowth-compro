@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getDefaultContent } from '../data/contentDefaults';
-import { fetchContentItems, getYouTubeVideoId } from '../lib/contentApi';
+import { fetchContentItems, getContentPath, getYouTubeVideoId } from '../lib/contentApi';
 import { initLanding } from './home/landingEngine';
 import './Home.css';
 
@@ -125,7 +125,9 @@ function CourseCard({ course, index }) {
         <p>{course.description}</p>
         <div className="cfoot">
           <span>{free ? 'Gratis' : 'Online course'}</span>
-          {course.url ? (
+          {getContentPath(course) ? (
+            <Link to={getContentPath(course)}>{(course.label || 'Lihat detail').replace(/!+$/, '')} <Arrow size={14} /></Link>
+          ) : course.url ? (
             <a href={course.url} target="_blank" rel="noopener noreferrer">{(course.label || 'Lihat detail').replace(/!+$/, '')} <Arrow size={14} /></a>
           ) : (
             <span>Segera hadir</span>
@@ -228,7 +230,7 @@ export default function Home() {
   const playable = videos.map((v) => ({ ...v, ytId: getYouTubeVideoId(v.url) })).filter((v) => v.ytId).slice(0, 3);
   const pairs = PAIRS.map((pair) => {
     const found = courses.find((c) => pair.match.test(c.title));
-    return { ...pair, course: found?.title || pair.course, url: found?.url || '' };
+    return { ...pair, course: found?.title || pair.course, path: getContentPath(found), url: found?.url || '' };
   });
   const collage = events.filter((e) => e.imageUrl).slice(1, 4);
 
@@ -374,10 +376,10 @@ export default function Home() {
                 <div className="row"><span className="tag new">Sekarang</span><span className="txt after">{pair.after}</span></div>
                 <i className="scanner" />
               </div>
-              {pair.url ? (
+              {!pair.path && pair.url ? (
                 <a className="go" href={pair.url} target="_blank" rel="noopener noreferrer">Lihat course-nya <Arrow /></a>
               ) : (
-                <Link className="go" to="/courses">Lihat course-nya <Arrow /></Link>
+                <Link className="go" to={pair.path || '/courses'}>Lihat course-nya <Arrow /></Link>
               )}
             </div>
           ))}
