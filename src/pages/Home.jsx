@@ -6,6 +6,7 @@ import SiteFooter from '../components/SiteFooter';
 import { Arrow, WhatsAppIcon } from '../components/ui';
 import { INFINITY_PATH, pad } from '../lib/brand';
 import { fetchContentItems, getContentPath, getYouTubeVideoId } from '../lib/contentApi';
+import { COMMUNITY_URL } from '../lib/site';
 import { initLanding } from './home/landingEngine';
 import './Home.css';
 
@@ -31,7 +32,7 @@ const FAQ = [
   ['Saya belum pernah pakai AI. Bisa ikut?', 'Bisa. Mulai dari video gratis di YouTube atau freebies Automate Threads, lalu lanjut ke AI Fundamentals: Image Prompting buat pegangan dasar menyusun prompt sendiri.'],
   ['Tools AI apa saja yang dipakai?', 'Tergantung course: ChatGPT/GPT untuk gambar, Claude untuk copywriting, Google Omni untuk video, Comet Browser untuk riset, Repliz untuk jadwal posting, dan OpenClaw untuk AI agent.'],
   ['Materinya bakal ketinggalan zaman nggak?', 'Dunia AI berubah cepat, jadi beberapa course (misalnya Framework AI Influencer) terus diperbarui saat ada teknik atau tools baru.'],
-  ['Gimana cara gabung komunitas?', 'Klik Join Komunitas. Kamu langsung terhubung ke WhatsApp AIGrowth untuk info grup, course, dan event terbaru.'],
+  ['Gimana cara gabung komunitas?', 'Klik Join Komunitas lalu Ikuti WhatsApp Channel AIGrowth. Info tutorial, course, dan event terbaru masuk ke sana.'],
   ['Course-nya dibeli di mana?', 'Tiap kartu course punya tombol yang mengarah ke halaman pendaftaran resminya. Freebies Automate Threads bisa diambil gratis.'],
   ['Bisa untuk training tim atau perusahaan?', 'Bisa. AIGrowth sudah mengisi training, workshop, dan webinar bersama Paragon Corp, Smesco, Cekat AI, Om Botak, sampai talkshow di Elshinta Radio.'],
 ];
@@ -223,7 +224,7 @@ export default function Home() {
               </h1>
               <p className="hero-sub" data-reveal style={{ '--d': 5 }}>Tempat praktisi, kreator, dan pemilik bisnis belajar AI lewat tutorial nyata, course terarah, dan kolaborasi yang relevan.</p>
               <div className="hero-cta" data-reveal style={{ '--d': 6 }}>
-                <a className="btn btn-primary" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Join Komunitas <span className="arr">→</span></a>
+                <a className="btn btn-primary" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join Komunitas <span className="arr">→</span></a>
                 <Link className="btn btn-glass" to="/courses">Lihat Courses</Link>
               </div>
               {courses.length > 0 && (
@@ -457,7 +458,7 @@ export default function Home() {
             <h2>Siap masuk <span className="grad">loop-nya?</span></h2>
             <p className="lead">Belajar, praktik, tumbuh, ulangi. Gabung komunitas AIGrowth dan berkembang bareng di era AI.</p>
             <div className="acts">
-              <a className="btn btn-primary" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Join Komunitas <span className="arr">→</span></a>
+              <a className="btn btn-primary" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join Komunitas <span className="arr">→</span></a>
               <a className="btn btn-glass" href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer">Tonton gratis di YouTube</a>
             </div>
           </div>
