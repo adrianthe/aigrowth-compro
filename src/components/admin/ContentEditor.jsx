@@ -420,7 +420,7 @@ export default function ContentEditor({ type, item, seed, onBack, onSaved, onDir
                   ? 'Harus diawali https://'
                   : form.checkoutUrl && !/myr\.id|mayar\./i.test(form.checkoutUrl)
                     ? 'Ini bukan link Mayar (myr.id). Pastikan memang link checkout yang benar.'
-                    : form.slug && !form.checkoutUrl ? 'Tanpa link checkout, tombol di halaman akan diarahkan ke WhatsApp.' : ''}
+                    : form.slug && !form.checkoutUrl ? 'Tanpa link checkout, tombol di halaman akan diarahkan ke WhatsApp Channel.' : ''}
               >
                 <div className="adm-affix">
                   <input id="f-checkout" className="adm-input" type="url" value={form.checkoutUrl} onChange={(event) => updateField('checkoutUrl', event.target.value)} placeholder="https://aigrowth.myr.id/course/..." />

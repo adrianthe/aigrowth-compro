@@ -6,7 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { getDefaultContent } from '../data/contentDefaults';
 import { pad } from '../lib/brand';
 import { fetchContentItems } from '../lib/contentApi';
-import { WHATSAPP_URL } from '../lib/site';
+import { COMMUNITY_URL } from '../lib/site';
 
 const ALL = 'Semua';
 
@@ -72,12 +72,12 @@ export default function Studio({ type = 'course' }) {
       <section className="wrap sec-final">
         <div className="final">
           <span className="pill">{isFree ? 'Mau lebih dalam?' : 'Masih bingung?'}</span>
-          <h2>{isFree ? <>Siap naik ke <span className="grad">course lengkap?</span></> : <>Ceritain kebutuhanmu, <span className="grad">kami pilihin.</span></>}</h2>
-          <p className="lead">{isFree ? 'Materi gratis buat mulai. Kalau mau terarah dari nol sampai jadi, ambil course-nya.' : 'Chat tim AIGrowth di WhatsApp, nanti diarahkan ke course yang paling pas buat kamu.'}</p>
+          <h2>{isFree ? <>Siap naik ke <span className="grad">course lengkap?</span></> : <>Biar nggak <span className="grad">ketinggalan update.</span></>}</h2>
+          <p className="lead">{isFree ? 'Materi gratis buat mulai. Kalau mau terarah dari nol sampai jadi, ambil course-nya.' : 'Ikuti WhatsApp Channel AIGrowth. Rekomendasi course, tutorial baru, dan promo masuk duluan di sana.'}</p>
           <div className="acts">
             {isFree
               ? <Link className="btn btn-primary" to="/courses">Lihat semua course <span className="arr">→</span></Link>
-              : <a className="btn btn-primary" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Chat via WhatsApp <span className="arr">→</span></a>}
+              : <a className="btn btn-primary" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join WhatsApp Channel <span className="arr">→</span></a>}
             <Link className="btn btn-glass" to={isFree ? '/' : '/gratis'}>{isFree ? 'Kenalan sama AIGrowth' : 'Mulai dari yang gratis'} <Arrow /></Link>
           </div>
         </div>

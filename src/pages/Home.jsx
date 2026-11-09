@@ -10,7 +10,6 @@ import { COMMUNITY_URL } from '../lib/site';
 import { initLanding } from './home/landingEngine';
 import './Home.css';
 
-const WHATSAPP_URL = 'https://wa.me/6287773535692';
 const YOUTUBE_URL = 'https://www.youtube.com/@Aigrowthid';
 const CHAPTER_LABELS = ['Mulai', 'Belajar', 'Praktik', 'Tumbuh'];
 const PRELOADER_KEY = 'aigrowth-home-preloaded';
@@ -234,7 +233,7 @@ export default function Home() {
                 <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" aria-label="YouTube AIGrowth"><svg className="i" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" /><path d="M10 9.5v5l4.5-2.5z" fill="currentColor" stroke="none" /></svg></a>
                 <a href="https://www.instagram.com/aigrowth.id/" target="_blank" rel="noopener noreferrer" aria-label="Instagram AIGrowth"><svg className="i" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg></a>
                 <a href="https://www.tiktok.com/@aigrowthid" target="_blank" rel="noopener noreferrer" aria-label="TikTok AIGrowth"><svg className="i" viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5" /><path d="M14 3c.5 2.6 2.4 4.4 5 4.6" /></svg></a>
-                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp AIGrowth"><WhatsAppIcon /></a>
+                <a href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Channel AIGrowth"><WhatsAppIcon /></a>
               </div>
             </div>
           </div>
@@ -348,8 +347,8 @@ export default function Home() {
               {courses.map((course, index) => <CourseCard key={course.id} course={course} index={index} />)}
               <article className="course end">
                 <span className="pill">Masih bingung?</span>
-                <div><h3>Ceritain kebutuhanmu, kami bantu pilihin.</h3><p>Chat tim AIGrowth di WhatsApp, nanti diarahkan ke course yang paling pas.</p></div>
-                <a className="btn btn-primary" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Chat via WhatsApp <span className="arr">→</span></a>
+                <div><h3>Ikuti channel-nya, biar nggak ketinggalan.</h3><p>Rekomendasi course, tutorial baru, dan promo AIGrowth masuk duluan di WhatsApp Channel.</p></div>
+                <a className="btn btn-primary" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join WhatsApp Channel <span className="arr">→</span></a>
               </article>
             </div>
           </div>
@@ -384,7 +383,7 @@ export default function Home() {
                 <p className="lead">AIGrowth sudah mengisi training perusahaan, workshop, webinar UMKM, sampai talkshow radio. Materinya disesuaikan dengan kebutuhan dan kasus nyata audiensmu.</p>
                 <div className="formats"><span>Training in-house</span><span>Workshop</span><span>Webinar</span><span>Tech conference</span><span>Talkshow</span></div>
                 <div className="acts">
-                  <a className="btn btn-primary" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Ajak kolaborasi <span className="arr">→</span></a>
+                  <a className="btn btn-primary" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join WhatsApp Channel <span className="arr">→</span></a>
                   <a className="btn btn-glass" href="#event">Lihat event</a>
                 </div>
               </div>
@@ -440,8 +439,8 @@ export default function Home() {
             ))}
           </div>
           <div className="faq-cta panel" data-reveal>
-            <span><b>Belum ketemu jawabannya?</b> Tanya langsung tim AIGrowth.</span>
-            <a className="btn btn-primary btn-sm" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer"><WhatsAppIcon size={16} />+62 877-7353-5692</a>
+            <span><b>Mau update terbaru?</b> Ikuti WhatsApp Channel AIGrowth.</span>
+            <a className="btn btn-primary btn-sm" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer"><WhatsAppIcon size={16} />Join Channel</a>
           </div>
         </div>
       </section>

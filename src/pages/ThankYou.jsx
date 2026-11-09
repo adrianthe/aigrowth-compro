@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { PORTAL_URL, WHATSAPP_URL, whatsappLink } from '../lib/site';
+import { COMMUNITY_URL, PORTAL_URL } from '../lib/site';
 import { getLastCheckout } from '../lib/tracking';
 import './Offer.css';
 
@@ -19,7 +19,7 @@ export default function ThankYou() {
   const steps = [
     ['Cek email kamu', `Mayar mengirim bukti bayar dan akses kelas ke ${checkout?.email || 'email yang kamu pakai saat bayar'}. Cek juga folder Promosi/Spam.`],
     ['Masuk ke portal member', 'Buka portal, masukkan email yang sama, lalu klik link login yang dikirim ke email. Semua kelas yang kamu beli ada di situ.'],
-    ['Gabung komunitas', 'Kalau ada kendala akses atau mau tanya materi, langsung chat tim AIGrowth di WhatsApp.'],
+    ['Gabung komunitas', 'Ikuti WhatsApp Channel AIGrowth buat update materi, tutorial baru, dan event.'],
   ];
 
   return (
@@ -41,7 +41,7 @@ export default function ThankYou() {
         </ol>
         <div className="of-actions ty-actions">
           {PORTAL_URL && <a className="primary-btn of-cta" href={PORTAL_URL} target="_blank" rel="noopener noreferrer">Masuk Kelas →</a>}
-          <a className="of-ghost" href={checkout?.title ? whatsappLink(`Halo AIGrowth, saya baru beli ${checkout.title}`) : WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Chat WhatsApp</a>
+          <a className="of-ghost" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join WhatsApp Channel</a>
         </div>
         <Link className="of-ask" to="/courses">Lihat course lainnya</Link>
       </section>

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { fetchContentBySlug, formatRupiah, getYouTubeVideoId } from '../lib/contentApi';
 import { newEventId, submitLead } from '../lib/leadApi';
-import { whatsappLink } from '../lib/site';
+import { COMMUNITY_URL } from '../lib/site';
 import { rememberCheckout, trackEvent } from '../lib/tracking';
 import './Offer.css';
 
@@ -162,7 +162,6 @@ export default function Offer({ type }) {
   const faq = sales.faq || [];
   const canCheckout = isCourse && Boolean(offer.checkoutUrl);
   const ctaLabel = sales.ctaLabel || (isCourse ? 'Daftar Sekarang' : 'Ambil Gratis');
-  const askLink = whatsappLink(`Halo AIGrowth, saya mau tanya soal ${offer.title}`);
 
   const openForm = () => dialogRef.current?.showModal();
   const closeForm = () => dialogRef.current?.close();
@@ -177,7 +176,7 @@ export default function Offer({ type }) {
   };
 
   const cta = isCourse && !canCheckout ? (
-    <a className="primary-btn of-cta" href={askLink} target="_blank" rel="noopener noreferrer">Tanya via WhatsApp →</a>
+    <a className="primary-btn of-cta" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join WhatsApp Channel →</a>
   ) : (
     <button type="button" className="primary-btn of-cta" onClick={openForm}>{ctaLabel} →</button>
   );
@@ -291,7 +290,7 @@ export default function Offer({ type }) {
         <p>{offer.title}</p>
         {isCourse && <Price offer={offer} />}
         {cta}
-        <a className="of-ask" href={askLink} target="_blank" rel="noopener noreferrer">Masih ragu? Tanya dulu via WhatsApp</a>
+        <a className="of-ask" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Masih ragu? Ikuti dulu WhatsApp Channel AIGrowth</a>
       </section>
 
       <div className="of-sticky">
@@ -316,8 +315,8 @@ export default function Offer({ type }) {
                 </>
               ) : (
                 <>
-                  <p>Data kamu sudah masuk. Tim AIGrowth akan kirim materinya lewat WhatsApp.</p>
-                  <a className="primary-btn of-submit" href={whatsappLink(`Halo AIGrowth, saya sudah isi form ${offer.title}`)} target="_blank" rel="noopener noreferrer">Chat WhatsApp →</a>
+                  <p>Data kamu sudah masuk. Tim AIGrowth akan kirim materinya ke WhatsApp kamu. Sambil nunggu, ikuti channel-nya ya.</p>
+                  <a className="primary-btn of-submit" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join WhatsApp Channel →</a>
                 </>
               )}
               <Link className="of-ask" to="/courses" onClick={closeForm}>Lihat course lengkap AIGrowth</Link>
