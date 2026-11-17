@@ -5,7 +5,7 @@ import CourseCard from '../components/CourseCard';
 import SiteFooter from '../components/SiteFooter';
 import { Arrow, WhatsAppIcon } from '../components/ui';
 import { INFINITY_PATH, pad } from '../lib/brand';
-import { fetchContentItems, getContentPath, getYouTubeVideoId } from '../lib/contentApi';
+import { fetchContentItems, getYouTubeVideoId } from '../lib/contentApi';
 import { COMMUNITY_URL } from '../lib/site';
 import { initLanding } from './home/landingEngine';
 import './Home.css';
@@ -17,24 +17,6 @@ const PRELOADER_KEY = 'aigrowth-home-preloaded';
 const TOOLS = [['G', 'ChatGPT'], ['C', 'Claude'], ['Ge', 'Gemini'], ['O', 'Google Omni'], ['Co', 'Comet Browser'], ['R', 'Repliz'], ['Oc', 'OpenClaw']];
 const TOPICS = ['AI influencer', 'foto produk', 'video sinematik', 'auto-post Threads', 'properti', 'F&B', 'image prompting', 'affiliate', 'AI agent'];
 const PARTNERS = ['Paragon Corp', 'Smesco', 'Cekat AI', 'Elshinta Radio', 'Om Botak'];
-
-// Each pair links to the matching course from the CMS when one exists
-const PAIRS = [
-  { match: /threads/i, label: 'Threads', course: 'Automate Threads Pakai AI', before: 'Posting manual tiap hari', after: 'Auto-post terjadwal' },
-  { match: /influencer/i, label: 'AI Influencer', course: 'Framework AI Influencer yang Konsisten', before: 'Muka karakter berubah-ubah', after: 'Identitas AI terkunci' },
-  { match: /propert/i, label: 'Properti', course: 'AI for Property', before: 'Foto listing gelap', after: 'Visual properti premium' },
-  { match: /commerce/i, label: 'Produk', course: 'AI for Product Commerce', before: 'Foto produk diam', after: 'Video produk sinematik' },
-  { match: /prompt/i, label: 'Prompting', course: 'AI Fundamentals: Image Prompting', before: 'Beli prompt orang terus', after: 'Punya formula sendiri' },
-];
-
-const FAQ = [
-  ['Saya belum pernah pakai AI. Bisa ikut?', 'Bisa. Mulai dari video gratis di YouTube atau freebies Automate Threads, lalu lanjut ke AI Fundamentals: Image Prompting buat pegangan dasar menyusun prompt sendiri.'],
-  ['Tools AI apa saja yang dipakai?', 'Tergantung course: ChatGPT/GPT untuk gambar, Claude untuk copywriting, Google Omni untuk video, Comet Browser untuk riset, Repliz untuk jadwal posting, dan OpenClaw untuk AI agent.'],
-  ['Materinya bakal ketinggalan zaman nggak?', 'Dunia AI berubah cepat, jadi beberapa course (misalnya Framework AI Influencer) terus diperbarui saat ada teknik atau tools baru.'],
-  ['Gimana cara gabung komunitas?', 'Klik Join Komunitas lalu Ikuti WhatsApp Channel AIGrowth. Info tutorial, course, dan event terbaru masuk ke sana.'],
-  ['Course-nya dibeli di mana?', 'Tiap kartu course punya tombol yang mengarah ke halaman pendaftaran resminya. Freebies Automate Threads bisa diambil gratis.'],
-  ['Bisa untuk training tim atau perusahaan?', 'Bisa. AIGrowth sudah mengisi training, workshop, dan webinar bersama Paragon Corp, Smesco, Cekat AI, Om Botak, sampai talkshow di Elshinta Radio.'],
-];
 
 function Split({ parts, start = 0 }) {
   let index = start;
@@ -178,10 +160,6 @@ export default function Home() {
   };
 
   const playable = videos.map((v) => ({ ...v, ytId: getYouTubeVideoId(v.url) })).filter((v) => v.ytId).slice(0, 3);
-  const pairs = PAIRS.map((pair) => {
-    const found = courses.find((c) => pair.match.test(c.title));
-    return { ...pair, course: found?.title || pair.course, path: getContentPath(found), url: found?.url || '' };
-  });
   const collage = events.filter((e) => e.imageUrl).slice(1, 4);
 
   return (
@@ -241,8 +219,8 @@ export default function Home() {
           <div className="chap" data-k="1" id="belajar">
             <div className="copy">
               <span className="pill" data-reveal>01 · Belajar</span>
-              <h2><Split parts={['Mulai dari ', ['nonton.', 'grad'], ' Gratis.']} /></h2>
-              <p className="lead" data-reveal style={{ '--d': 2 }}>Tutorial praktis di YouTube AIGrowth. Tekan play dan langsung belajar tanpa pindah halaman.</p>
+              <h2><Split parts={['Mulai dari yang ', ['free.', 'grad']]} /></h2>
+              <p className="lead" data-reveal style={{ '--d': 2 }}>Belajar bareng AIGrowth lewat tutorial praktis di YouTube. Tekan play, langsung belajar tanpa pindah halaman.</p>
               <div className="vlist panel" data-reveal style={{ '--d': 3 }}>
                 {playable.map((video) => (
                   <button key={video.id} className="vitem" type="button" onClick={() => setVideoId(video.ytId)}>
@@ -306,65 +284,18 @@ export default function Home() {
         <div className="tools-fade" />
       </section>
 
-      {/* ===== DULU vs SEKARANG ===== */}
-      <section className="scan" aria-label="Dulu dan sekarang">
-        <div className="scan-sticky">
-          <div className="scan-grid" />
-          <div className="scan-head"><span className="pill">Dulu vs sekarang</span></div>
-          {pairs.map((pair) => (
-            <div className="pair" key={pair.label}>
-              <span className="pc">{pair.course}</span>
-              <div className="lines">
-                <div className="row"><span className="tag old">Dulu</span><span className="txt before">{pair.before}</span></div>
-                <div className="row"><span className="tag new">Sekarang</span><span className="txt after">{pair.after}</span></div>
-                <i className="scanner" />
-              </div>
-              {!pair.path && pair.url ? (
-                <a className="go" href={pair.url} target="_blank" rel="noopener noreferrer">Lihat course-nya <Arrow /></a>
-              ) : (
-                <Link className="go" to={pair.path || '/courses'}>Lihat course-nya <Arrow /></Link>
-              )}
-            </div>
-          ))}
-          <div className="scan-steps">{pairs.map((pair) => <span key={pair.label}>{pair.label}</span>)}</div>
-          <div className="scan-cap">Gambaran perubahan cara kerja dari materi course. Hasil tiap orang bisa berbeda.</div>
-        </div>
-      </section>
-
-      {/* ===== COURSES ===== */}
-      <section className="courses" id="course">
-        <div className="c-sticky">
-          <div className="wrap sec-head">
-            <div>
-              <span className="pill" data-reveal>AIGrowth learning</span>
-              <h2 data-split><Split parts={['Pilih skill yang mau ', ['kamu kuasai.', 'grad']]} /></h2>
-              <p className="lead" data-reveal style={{ '--d': 2 }}>Course fokus, contoh praktis, langsung bisa dipakai di kerjaanmu.</p>
-            </div>
-            <Link className="btn btn-glass" data-reveal style={{ '--d': 3 }} to="/courses">Semua course <Arrow /></Link>
-          </div>
-          <div className="c-view">
-            <div className="c-track">
-              {courses.map((course, index) => <CourseCard key={course.id} course={course} index={index} />)}
-              <article className="course end">
-                <span className="pill">Masih bingung?</span>
-                <div><h3>Ikuti channel-nya, biar nggak ketinggalan.</h3><p>Rekomendasi course, tutorial baru, dan promo AIGrowth masuk duluan di WhatsApp Channel.</p></div>
-                <a className="btn btn-primary" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join WhatsApp Channel <span className="arr">→</span></a>
-              </article>
-            </div>
-          </div>
-          <div className="wrap c-foot"><div className="c-prog"><i /></div><span>SCROLL UNTUK GESER</span></div>
-        </div>
-      </section>
-
       {/* ===== EVENTS ===== */}
       <section className="sec" id="event">
         <div className="wrap">
           <div className="sec-head">
             <div>
-              <span className="pill" data-reveal>Community in action</span>
-              <h2 data-split><Split parts={['Komunitas yang ', ['turun ke lapangan.', 'grad']]} /></h2>
+              <span className="pill" data-reveal>Activities &amp; portfolio</span>
+              <h2 data-split><Split parts={['Activities ', ['& Portfolio.', 'grad']]} /></h2>
             </div>
-            <p className="lead" data-reveal style={{ '--d': 2 }}>Webinar, training, workshop, konferensi, talkshow radio, sampai AI tech trip ke Shenzhen.</p>
+            <div data-reveal style={{ '--d': 2 }}>
+              <p className="lead">Webinar, training, workshop, konferensi, talkshow radio, sampai AI tech trip ke Shenzhen.</p>
+              <Link className="btn btn-glass btn-sm ev-more" to="/portfolio">Lihat semua portfolio <Arrow /></Link>
+            </div>
           </div>
           <div className="bento">
             {events.map((event, index) => <EventTile key={event.id} event={event} index={index} />)}
@@ -384,7 +315,7 @@ export default function Home() {
                 <div className="formats"><span>Training in-house</span><span>Workshop</span><span>Webinar</span><span>Tech conference</span><span>Talkshow</span></div>
                 <div className="acts">
                   <a className="btn btn-primary" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join WhatsApp Channel <span className="arr">→</span></a>
-                  <a className="btn btn-glass" href="#event">Lihat event</a>
+                  <Link className="btn btn-glass" to="/portfolio">Lihat portfolio</Link>
                 </div>
               </div>
               {collage.length > 0 && (
@@ -419,29 +350,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== FAQ ===== */}
-      <section className="sec" id="faq">
-        <div className="wrap">
-          <div className="faq-head">
-            <span className="pill" data-reveal>FAQ</span>
-            <h2 data-split><Split parts={['Masih ada yang ', ['bikin ragu?', 'grad']]} /></h2>
+      {/* ===== COURSES ===== */}
+      <section className="courses" id="course">
+        <div className="c-sticky">
+          <div className="wrap sec-head">
+            <div>
+              <span className="pill" data-reveal>AIGrowth learning</span>
+              <h2 data-split><Split parts={['Pilih skill yang mau ', ['kamu kuasai.', 'grad']]} /></h2>
+              <p className="lead" data-reveal style={{ '--d': 2 }}>Course fokus, contoh praktis, langsung bisa dipakai di kerjaanmu.</p>
+            </div>
+            <Link className="btn btn-glass" data-reveal style={{ '--d': 3 }} to="/courses">Semua course <Arrow /></Link>
           </div>
-          <div className="qa">
-            {[FAQ.slice(0, 3), FAQ.slice(3)].map((col, ci) => (
-              <div className="qa-col" key={ci}>
-                {col.map(([q, a], i) => (
-                  <details key={q} data-reveal style={{ '--d': i + ci }} open={ci === 0 && i === 0}>
-                    <summary>{q}<i /></summary>
-                    <p className="ans">{a}</p>
-                  </details>
-                ))}
-              </div>
-            ))}
+          <div className="c-view">
+            <div className="c-track">
+              {courses.map((course, index) => <CourseCard key={course.id} course={course} index={index} />)}
+              <article className="course end">
+                <span className="pill">Masih bingung?</span>
+                <div><h3>Ikuti channel-nya, biar nggak ketinggalan.</h3><p>Rekomendasi course, tutorial baru, dan promo AIGrowth masuk duluan di WhatsApp Channel.</p></div>
+                <a className="btn btn-primary" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join WhatsApp Channel <span className="arr">→</span></a>
+              </article>
+            </div>
           </div>
-          <div className="faq-cta panel" data-reveal>
-            <span><b>Mau update terbaru?</b> Ikuti WhatsApp Channel AIGrowth.</span>
-            <a className="btn btn-primary btn-sm" href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer"><WhatsAppIcon size={16} />Join Channel</a>
-          </div>
+          <div className="wrap c-foot"><div className="c-prog"><i /></div><span>SCROLL UNTUK GESER</span></div>
         </div>
       </section>
 

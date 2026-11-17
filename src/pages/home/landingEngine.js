@@ -80,8 +80,10 @@ export function initLanding(root, { showPreloader, onChapter, onReady }) {
     tl.stageH = stage.offsetHeight;
     tl.cTop = absTop(cSec);
     tl.cH = cSec.offsetHeight;
-    tl.scanTop = absTop(scanSec);
-    tl.scanH = scanSec.offsetHeight;
+    if (scanSec) {
+      tl.scanTop = absTop(scanSec);
+      tl.scanH = scanSec.offsetHeight;
+    }
   }
 
   /* ---------- in-page anchors ---------- */
@@ -179,7 +181,7 @@ export function initLanding(root, { showPreloader, onChapter, onReady }) {
       track.style.transform = `translate3d(${(-cp * tl.maxShift).toFixed(1)}px,0,0)`;
       cBar.style.transform = `scaleX(${cp.toFixed(4)})`;
     }
-    if (y + window.innerHeight > tl.scanTop && y < tl.scanTop + tl.scanH) {
+    if (scanSec && y + window.innerHeight > tl.scanTop && y < tl.scanTop + tl.scanH) {
       scanFrame(clamp((y - tl.scanTop) / Math.max(1, tl.scanH - window.innerHeight)));
       const step = scanSticky.dataset.step || '0';
       if (step !== lastStep) {
