@@ -7,6 +7,7 @@ import Admin from './pages/Admin';
 import Login from './pages/Login';
 import Offer from './pages/Offer';
 import ThankYou from './pages/ThankYou';
+import Portfolio from './pages/Portfolio';
 import ProtectedRoute from './components/ProtectedRoute';
 import TrafficTracker from './components/TrafficTracker';
 import SiteFooter from './components/SiteFooter';
@@ -41,6 +42,8 @@ function App() {
               <Route path="/gratis/:slug" element={<Offer type="freebie" />} />
               <Route path="/terima-kasih" element={<ThankYou />} />
               <Route path="/tools" element={<Tools />} />
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/portofolio" element={<Portfolio />} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin" element={
                 <ProtectedRoute>

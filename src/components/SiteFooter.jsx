@@ -13,7 +13,7 @@ export default function SiteFooter() {
             <p>Komunitas AI praktis Indonesia. Tutorial nyata, course terarah, dan kolaborasi yang relevan.</p>
           </div>
           <div><h4>BELAJAR</h4><ul><li><Link to="/courses">Courses</Link></li><li><Link to="/gratis">Freebies</Link></li><li><Link to="/tools">Tools</Link></li><li><a href={PORTAL_URL} target="_blank" rel="noopener noreferrer">Masuk kelas</a></li></ul></div>
-          <div><h4>KOMUNITAS</h4><ul><li><a href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join komunitas</a></li><li><a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer">Video gratis</a></li></ul></div>
+          <div><h4>KOMUNITAS</h4><ul><li><a href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">Join komunitas</a></li><li><Link to="/portfolio">Portfolio event</Link></li><li><a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer">Video gratis</a></li></ul></div>
           <div><h4>IKUTI</h4><ul><li><a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer">YouTube</a></li><li><a href="https://www.instagram.com/aigrowth.id/" target="_blank" rel="noopener noreferrer">Instagram</a></li><li><a href="https://www.tiktok.com/@aigrowthid" target="_blank" rel="noopener noreferrer">TikTok</a></li><li><a href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">WhatsApp Channel</a></li></ul></div>
         </div>
         <svg className="foot-line" viewBox="0 0 1200 22" preserveAspectRatio="none" aria-hidden="true"><path d="M0 11 C 150 -4, 300 26, 450 11 S 750 -4, 900 11 S 1100 26, 1200 11" /></svg>
