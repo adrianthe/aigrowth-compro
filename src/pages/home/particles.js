@@ -142,39 +142,6 @@ function shapeNetwork(n) {
 }
 
 // 02 Praktik: flowing data surface
-function shapeWave(n) {
-  const a = new Float32Array(n * 3);
-  const rows = 38;
-  const W = 3.6;
-  const D = 2.6;
-  const tilt = 0.62;
-  const f = (x, z) => 0.55 * Math.sin(x * 1.05 + z * 0.7) + 0.32 * Math.cos(z * 1.6 - x * 0.45) + 0.12 * Math.sin(x * 3.1);
-  for (let i = 0; i < n; i++) {
-    let x;
-    let z;
-    let r;
-    let tries = 0;
-    do {
-      r = Math.random();
-      if (r < 0.8) {
-        const row = (Math.random() * rows) | 0;
-        z = -D + (row / (rows - 1)) * 2 * D;
-        x = (Math.random() * 2 - 1) * W;
-      } else {
-        x = (Math.random() * 2 - 1) * W;
-        z = (Math.random() * 2 - 1) * D;
-      }
-    } while (++tries < 6 && Math.random() < Math.pow(Math.max(Math.abs(x) / W, Math.abs(z) / D), 4));
-    let y = f(x, z);
-    if (r > 0.96) y += 0.3 + Math.random() * 1.8;
-    a[i * 3] = x;
-    a[i * 3 + 1] = y * Math.cos(tilt) - z * Math.sin(tilt);
-    a[i * 3 + 2] = y * Math.sin(tilt) + z * Math.cos(tilt);
-  }
-  return a;
-}
-
-// 03 Tumbuh: rising growth spiral
 function shapeSpiral(n) {
   const a = new Float32Array(n * 3);
   const H = 4.4;
@@ -217,7 +184,6 @@ function shapeSpiral(n) {
 const SHAPES = [
   { w: 6.9, desk: { fx: 0, fy: -0.04, fit: 1.62, a: 1 }, mob: { fx: 0, fy: -0.6, fit: 1.0, a: 0.95 }, rot: (t, mx, my) => [0.1 + my * 0.1, Math.sin(t * 0.3) * 0.22 + mx * 0.2] },
   { w: 6.4, desk: { fx: 0.48, fy: 0, fit: 1.05, a: 1 }, mob: { fx: 0, fy: 0.46, fit: 0.98, a: 1 }, rot: (t, mx, my) => [0.2 + my * 0.2, Math.sin(t * 0.12) * 1.4 + mx * 0.4] },
-  { w: 7.2, desk: { fx: -0.46, fy: -0.02, fit: 1.0, a: 1 }, mob: { fx: 0, fy: 0.5, fit: 1.0, a: 1 }, rot: (t, mx, my) => [my * 0.15, Math.sin(t * 0.25) * 0.25 + mx * 0.3 + 0.35] },
   { w: 4.6, desk: { fx: 0, fy: 0.42, fit: 0.46, a: 1 }, mob: { fx: 0, fy: 0.42, fit: 0.88, a: 1 }, rot: (t, mx, my) => [0.3 + my * 0.1, Math.sin(t * 0.18) * 2.4 + mx * 0.3] },
 ];
 
@@ -231,7 +197,7 @@ export function createParticles({ canvas, sticky, haze, reduced }) {
 
   const mobile = window.innerWidth < 900;
   const N = mobile ? 9000 : 15000;
-  const shapes = [shapeInfinity(N), shapeNetwork(N), shapeWave(N), shapeSpiral(N)];
+  const shapes = [shapeInfinity(N), shapeNetwork(N), shapeSpiral(N)];
 
   const pos = new Float32Array(N * 3);
   const col = new Float32Array(N * 3);

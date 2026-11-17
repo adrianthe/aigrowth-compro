@@ -6,7 +6,7 @@ const smooth = (a, b, v) => {
   return t * t * (3 - 2 * t);
 };
 
-const CHAPTERS = 4;
+const CHAPTERS = 3;
 const PRELOAD_MS = 1500;
 
 /**
@@ -63,7 +63,7 @@ export function initLanding(root, { showPreloader, onChapter, onReady }) {
   const tl = { stageTop: 0, stageH: 0, desk: false, maxShift: 0, cTop: 0, cH: 0, scanTop: 0, scanH: 0 };
   const absTop = (el) => el.getBoundingClientRect().top + window.scrollY;
   // scroll position where chapter k sits fully settled
-  const chapY = (k) => tl.stageTop + clamp((k + 0.15) / 3.3) * (tl.stageH - window.innerHeight);
+  const chapY = (k) => tl.stageTop + clamp((k + 0.15) / 2.3) * (tl.stageH - window.innerHeight);
 
   function layout() {
     tl.desk = window.innerWidth > 900;
@@ -171,7 +171,7 @@ export function initLanding(root, { showPreloader, onChapter, onReady }) {
     if (lenis) lenis.raf(now);
     const y = window.scrollY;
     const p = clamp((y - tl.stageTop) / Math.max(1, tl.stageH - window.innerHeight));
-    const s = clamp(p * 3.3 - 0.15, 0, CHAPTERS - 1);
+    const s = clamp(p * 2.3 - 0.15, 0, CHAPTERS - 1);
     if (ready) setChapter(Math.round(s));
     if (loopProg) loopProg.style.strokeDashoffset = (100 - (s / (CHAPTERS - 1)) * 100).toFixed(2);
     if (loopnav) loopnav.classList.toggle('hide', y > tl.stageTop + tl.stageH - window.innerHeight * 1.1);

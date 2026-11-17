@@ -11,11 +11,9 @@ import { initLanding } from './home/landingEngine';
 import './Home.css';
 
 const YOUTUBE_URL = 'https://www.youtube.com/@Aigrowthid';
-const CHAPTER_LABELS = ['Mulai', 'Belajar', 'Praktik', 'Tumbuh'];
+const CHAPTER_LABELS = ['Mulai', 'Belajar', 'Tumbuh'];
 const PRELOADER_KEY = 'aigrowth-home-preloaded';
 
-const TOOLS = [['G', 'ChatGPT'], ['C', 'Claude'], ['Ge', 'Gemini'], ['O', 'Google Omni'], ['Co', 'Comet Browser'], ['R', 'Repliz'], ['Oc', 'OpenClaw']];
-const TOPICS = ['AI influencer', 'foto produk', 'video sinematik', 'auto-post Threads', 'properti', 'F&B', 'image prompting', 'affiliate', 'AI agent'];
 const PARTNERS = ['Paragon Corp', 'Smesco', 'Cekat AI', 'Elshinta Radio', 'Om Botak'];
 
 function Split({ parts, start = 0 }) {
@@ -236,27 +234,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="chap flip" data-k="2" id="praktik">
+          <div className="chap rise" data-k="2" id="tumbuh">
             <div className="copy">
-              <span className="pill" data-reveal>02 · Praktik</span>
-              <h2><Split parts={['Lalu ', ['praktik', 'grad'], ' pakai workflow nyata.']} /></h2>
-              <p className="lead" data-reveal style={{ '--d': 2 }}>Bukan kumpulan trik. Tiap course ngajarin alur kerja utuh, dari riset sampai hasilnya jalan sendiri.</p>
-              <div className="flow" data-reveal style={{ '--d': 3 }}>
-                <div className="node" style={{ '--nd': '.7s' }}><div className="tl"><i>C</i><b>Comet</b></div><p>Riset konten viral di niche-mu</p><div className="st"><span className="wt">menunggu…</span><span className="dn">✓ 10 referensi</span></div></div>
-                <div className="node" style={{ '--nd': '1.4s' }}><div className="tl"><i>Cl</i><b>Claude</b></div><p>Tulis thread original dari polanya</p><div className="st"><span className="wt">menunggu…</span><span className="dn">✓ 3 draft siap</span></div></div>
-                <div className="node" style={{ '--nd': '2.1s' }}><div className="tl"><i>R</i><b>Repliz</b></div><p>Jadwal &amp; auto-post ke Threads</p><div className="st"><span className="wt">menunggu…</span><span className="dn">✓ terjadwal</span></div></div>
-              </div>
-              <div className="post panel">
-                <img src="/logo.jpg" alt="" />
-                <div className="post-body"><div className="ph"><b>aigrowth.id</b><em>Terjadwal · besok 09.00</em></div><div className="sk" style={{ width: '92%' }} /><div className="sk" style={{ width: '76%' }} /><div className="sk" style={{ width: '54%' }} /></div>
-              </div>
-              <div className="flow-note" data-reveal style={{ '--d': 4 }}>Ilustrasi alur dari freebies Automate Threads Pakai AI.</div>
-            </div>
-          </div>
-
-          <div className="chap rise" data-k="3" id="tumbuh">
-            <div className="copy">
-              <span className="pill" data-reveal>03 · Tumbuh</span>
+              <span className="pill" data-reveal>02 · Tumbuh</span>
               <h2><Split parts={['Terus ', ['tumbuh', 'grad'], ' bareng komunitas.']} /></h2>
               <p className="lead" data-reveal style={{ '--d': 2 }}>AI terasa lebih mudah saat belajar bareng. Tanya, share hasil, ikut event, lalu ulangi loop-nya dengan skill baru.</p>
               <div className="stats">
@@ -267,21 +247,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* ===== TOOLS ===== */}
-      <section className="tools" aria-label="Tools dan topik">
-        <div className="wrap head">
-          <h3 data-reveal>Tools &amp; topik yang dibahas di kelas AIGrowth.</h3>
-          <p data-reveal style={{ '--d': 2 }}>Dipilih karena dipakai di kerjaan sehari-hari, bukan karena lagi viral doang.</p>
-        </div>
-        <div className="chiprow">
-          {[...TOOLS, ...TOOLS].map(([icon, name], i) => <span className="chip" key={`${name}-${i}`}><i>{icon}</i>{name}</span>)}
-        </div>
-        <div className="chiprow rev">
-          {[...TOPICS, ...TOPICS].map((topic, i) => <span className="chip t" key={`${topic}-${i}`}>{topic}</span>)}
-        </div>
-        <div className="tools-fade" />
       </section>
 
       {/* ===== EVENTS ===== */}

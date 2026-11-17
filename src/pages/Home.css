@@ -30,7 +30,7 @@ html.lp-lock { overflow: hidden; }
 .lp-preloader .segs i.on { background: #00d2ff; box-shadow: 0 0 10px rgba(0, 210, 255, .7); }
 
 /* ===== Growth Loop stage ===== */
-.lp .lp-stage { height: 520vh; position: relative; }
+.lp .lp-stage { height: 400vh; position: relative; }
 .lp .stage-sticky { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .lp .pixels { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(rgba(139, 233, 255, .16) 1px, transparent 1.2px); background-size: 26px 26px; -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 10%, transparent 75%); opacity: .6; }
 .lp .haze { position: absolute; left: 0; top: 0; width: 820px; height: 820px; border-radius: 50%; background: radial-gradient(circle, rgba(0, 210, 255, .2), rgba(58, 123, 213, .1) 40%, transparent 70%); pointer-events: none; will-change: transform; transform: translate(30vw, 0); }

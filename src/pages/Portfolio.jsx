@@ -70,14 +70,6 @@ export default function Portfolio() {
           <h1 data-reveal style={{ '--d': 1 }}>Event yang sudah <span className="grad">kami jalanin.</span></h1>
           <p className="lead" data-reveal style={{ '--d': 2 }}>Training perusahaan, kelas offline, webinar UMKM, sampai radio dan podcast. Semua membawa AI yang praktis dan langsung kepake.</p>
         </div>
-        <div className="pf-stats" data-reveal style={{ '--d': 3 }}>
-          {groups.map((group) => (
-            <a key={group.kind} className="hero-stat panel" href={`#${group.kind}`}>
-              <b className="grad">{pad(group.items.length)}</b>
-              <span>{group.label.toUpperCase().replace(' & ', ' & ')}</span>
-            </a>
-          ))}
-        </div>
       </section>
 
       <section className="wrap">
